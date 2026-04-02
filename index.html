@@ -185,6 +185,8 @@ textarea::placeholder{color:var(--text3)}
             <div class="field"><label>Weight lbs</label><input id="f-wt" type="number" inputmode="decimal" placeholder="8000"/></div>
             <div class="field"><label>Equipment</label><input id="f-eq" placeholder="Mega ramps"/></div>
             <div class="field"><label>Broker</label><input id="f-br" placeholder="MAYBELL LLC"/></div>
+            <div class="field"><label>MC Number</label><input id="f-mc" placeholder="1647198"/></div>
+            <div class="field"><label>PU Date</label><input id="f-pudate" placeholder="Tomorrow morning"/></div>
           </div>
           <button class="btn-main" onclick="calcManual()">Calcular →</button>
         </div>
@@ -213,6 +215,8 @@ textarea::placeholder{color:var(--text3)}
           <div class="field"><label>Weight lbs</label><input id="pf-wt" type="number" inputmode="decimal"/></div>
           <div class="field"><label>Equipment</label><input id="pf-eq"/></div>
           <div class="field"><label>Broker</label><input id="pf-br"/></div>
+          <div class="field"><label>MC Number</label><input id="pf-mc" placeholder="1647198"/></div>
+          <div class="field"><label>PU Date</label><input id="pf-pudate" placeholder="Tomorrow morning"/></div>
         </div>
       </div>
 
@@ -408,6 +412,8 @@ function fillParsed(p){
   document.getElementById('pf-wt').value=p.weight_lbs||'';
   document.getElementById('pf-eq').value=p.equipment||'';
   document.getElementById('pf-br').value=p.broker_name||'';
+  document.getElementById('pf-mc').value=p.mc_number||'';
+  document.getElementById('pf-pudate').value=p.pickup_date||'';
 }
 
 function recalcParsed(){
@@ -419,7 +425,8 @@ function recalcParsed(){
     gross_pay:parseFloat(document.getElementById('pf-pay').value)||0,
     weight_lbs:document.getElementById('pf-wt').value,
     equipment:document.getElementById('pf-eq').value,
-    broker_name:document.getElementById('pf-br').value
+    broker_name:document.getElementById('pf-br').value,
+    mc_number:document.getElementById('pf-mc').value
   });
 }
 
@@ -460,6 +467,7 @@ function calcManual(){
     weight:document.getElementById('f-wt').value,
     equipment:document.getElementById('f-eq').value,
     broker:document.getElementById('f-br').value,
+    mc:document.getElementById('f-mc').value,
     raw:'Manual entry'
   });
 }
@@ -568,8 +576,12 @@ function renderHist(){
   list.innerHTML=loads.map(l=>{
     const col=l.rpm>=cfg.green?'var(--green)':l.rpm>=cfg.yellow?'var(--yellow)':'var(--red)';
     const dotcol=l.rpm>=cfg.green?'#00d4aa':l.rpm>=cfg.yellow?'#f5a623':'#f56373';
-    return`<div class="hist-item">
-      <div class="hi-route">${l.pickup||'?'} → ${l.delivery||'?'}</div>
+    return`<div class="hist-item" id="hi-${l.id}">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">
+        <div class="hi-route" style="flex:1">${l.pickup||'?'} → ${l.delivery||'?'}</div>
+        <button onclick="deleteLoad(${l.id})" style="background:var(--red-bg);border:0.5px solid var(--red-border);color:var(--red);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;cursor:pointer;margin-left:8px;flex-shrink:0">Borrar</button>
+      </div>
+      ${l.mc?`<div style="font-size:10px;color:var(--text3);margin-bottom:6px">MC# ${l.mc} · ${l.broker||''}</div>`:''}
       <div class="hi-bottom">
         <div class="hi-meta">
           <span><span class="hi-dot" style="background:${dotcol}"></span>${l.tot||0} mi</span>
@@ -602,6 +614,13 @@ function renderBrokers(){
     </div>
     <div class="bi-rpm">$${(b.rpmSum/b.count).toFixed(2)}</div>
   </div>`).join('');
+}
+
+function deleteLoad(id){
+  loads=loads.filter(l=>l.id!==id);
+  save();updateCount();
+  toast('Load borrado');
+  renderHist();
 }
 
 function clearData(){
