@@ -4,302 +4,427 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="HotShot Pro"/>
-<meta name="theme-color" content="#ffffff" id="theme-color-meta"/>
-<title>HotShot Pro — Load Evaluator</title>
+<meta name="theme-color" content="#0f0f0f"/>
+<title>HotShot Pro</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body.dark{
-  --bg:#0a0c10;--bg2:#111318;--bg3:#161b24;--bg4:#1a2030;
-  --border:#1e2535;--border2:#252d3d;
-  --text:#f0f4ff;--text2:#8892a4;--text3:#4a5568;
-  --card-bg:#111318;--input-bg:#0a0c10;
-  --green:#00d4aa;--green-bg:#051a14;--green-border:#00d4aa30;
-  --yellow:#f5a623;--yellow-bg:#1a1200;--yellow-border:#f5a62330;
-  --red:#f56373;--red-bg:#1a0508;--red-border:#f5637330;
-  --kpi-bg:rgba(0,0,0,.3);--bk-line:#1a2030;--neg-bg:#161b24;
+:root{
+  --bg:#0f0f0f;--sidebar:#1a1a1a;--card:#1e1e1e;--card2:#252525;
+  --border:#2a2a2a;--border2:#333;
+  --text:#f5f5f5;--text2:#aaa;--text3:#666;
+  --orange:#f97316;--orange-bg:#2a1500;--orange-border:#f9731640;
+  --green:#10d98a;--green-bg:#0a2a1a;--green-border:#10d98a40;
+  --red:#ef4444;--red-bg:#2a0a0a;--red-border:#ef444440;
+  --yellow:#f59e0b;--yellow-bg:#2a1a00;--yellow-border:#f59e0b40;
+  --accent:#f97316;
 }
-body.light{
-  --bg:#f2f4f8;--bg2:#ffffff;--bg3:#f7f8fc;--bg4:#e8edf5;
-  --border:#dde2ec;--border2:#c8d0df;
-  --text:#0f1923;--text2:#4a5568;--text3:#8896aa;
-  --card-bg:#ffffff;--input-bg:#f7f8fc;
-  --green:#00a882;--green-bg:#e6f7f3;--green-border:#00a88240;
-  --yellow:#d4840a;--yellow-bg:#fff8ec;--yellow-border:#d4840a40;
-  --red:#d63a4a;--red-bg:#fff0f1;--red-border:#d63a4a40;
-  --kpi-bg:rgba(0,0,0,.04);--bk-line:#eef0f5;--neg-bg:#f7f8fc;
-}
-html,body{height:100%;font-family:-apple-system,'SF Pro Display','SF Pro Text',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;background:var(--bg);color:var(--text);transition:background .25s,color .25s}
-.app{display:flex;flex-direction:column;height:100vh;height:-webkit-fill-available;max-width:500px;margin:0 auto;background:var(--bg)}
-.statusbar{background:var(--bg2);padding:env(safe-area-inset-top,12px) 16px 10px;border-bottom:0.5px solid var(--border);flex-shrink:0;transition:background .25s,border-color .25s}
-.sb-inner{display:flex;justify-content:space-between;align-items:center}
-.sb-logo{display:flex;align-items:center;gap:9px}
-.sb-icon{width:28px;height:28px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
-.sb-name{font-size:14px;font-weight:700;color:var(--text);letter-spacing:.2px}
-.sb-sub{font-size:10px;color:var(--text3);margin-top:1px}
-.sb-right{display:flex;align-items:center;gap:8px}
-.sb-count{font-size:11px;color:var(--text3);background:var(--bg3);padding:4px 10px;border-radius:12px;border:0.5px solid var(--border)}
-.theme-btn{background:var(--bg3);border:0.5px solid var(--border);border-radius:20px;padding:3px 9px;font-size:16px;cursor:pointer;line-height:1.4}
-.scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 20px}
-.tab-nav{background:var(--bg2);border-top:0.5px solid var(--border);padding:8px 10px calc(env(safe-area-inset-bottom,0px) + 8px);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;flex-shrink:0;transition:background .25s}
-.tn{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:7px 4px;border-radius:10px;transition:background .15s;user-select:none}
-.tn.active{background:var(--bg4)}
-.tn svg{width:20px;height:20px;stroke:var(--text3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}
-.tn.active svg{stroke:var(--green)}
-.tn span{font-size:10px;color:var(--text3);font-weight:500;transition:color .15s}
-.tn.active span{color:var(--green)}
-.section{display:none}.section.active{display:block}
-.card{background:var(--card-bg);border:0.5px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:12px;transition:background .25s,border-color .25s}
-.card-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
-textarea{width:100%;background:var(--input-bg);border:0.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;padding:12px 14px;resize:none;font-family:inherit;line-height:1.6;outline:none;transition:border .2s,background .25s}
-textarea:focus{border-color:var(--green)}
-textarea::placeholder{color:var(--text3)}
-.btn-main{width:100%;background:var(--green);color:#fff;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;transition:opacity .2s,transform .1s}
-.btn-main:active{opacity:.8;transform:scale(.99)}
-.btn-main.loading{opacity:.5;pointer-events:none}
-.mode-toggle{display:grid;grid-template-columns:1fr 1fr;background:var(--input-bg);border-radius:10px;padding:3px;margin-bottom:14px;border:0.5px solid var(--border)}
-.mt-btn{padding:9px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;text-align:center;color:var(--text3);transition:all .15s;border:none;background:none}
-.mt-btn.active{background:var(--bg4);color:var(--green)}
-.ai-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg4);border:0.5px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--green);margin-bottom:10px}
-.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.verdict-card{border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid;transition:all .3s}
-.vc-green{background:var(--green-bg);border-color:var(--green-border)}
-.vc-yellow{background:var(--yellow-bg);border-color:var(--yellow-border)}
-.vc-red{background:var(--red-bg);border-color:var(--red-border)}
-.vc-neutral{background:var(--card-bg);border-color:var(--border)}
-.verdict-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.verdict-label{font-size:11px;color:var(--text3);font-weight:500}
-.vbadge{padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.5px}
-.vb-green{background:var(--green-bg);color:var(--green);border:0.5px solid var(--green-border)}
-.vb-yellow{background:var(--yellow-bg);color:var(--yellow);border:0.5px solid var(--yellow-border)}
-.vb-red{background:var(--red-bg);color:var(--red);border:0.5px solid var(--red-border)}
-.vb-neutral{background:var(--bg3);color:var(--text3);border:0.5px solid var(--border)}
-.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.kpi{text-align:center;background:var(--kpi-bg);border-radius:10px;padding:12px 6px}
-.kpi-v{font-size:21px;font-weight:700;line-height:1}
-.kpi-v.g{color:var(--green)}.kpi-v.y{color:var(--yellow)}.kpi-v.r{color:var(--red)}.kpi-v.n{color:var(--text2)}
-.kpi-l{font-size:9px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
-.bk-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:0.5px solid var(--bk-line)}
-.bk-row:last-child{border:none;padding-bottom:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Display',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+
+/* LAYOUT */
+.app{display:flex;height:100vh;height:-webkit-fill-available}
+
+/* SIDEBAR */
+.sidebar{width:68px;background:var(--sidebar);border-right:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:env(safe-area-inset-top,16px) 0 env(safe-area-inset-bottom,16px);gap:4px;flex-shrink:0}
+.sb-logo{width:36px;height:36px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;margin-bottom:12px}
+.sb-nav{display:flex;flex-direction:column;gap:4px;flex:1;align-items:center;padding-top:4px}
+.sn{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;border:none;background:none}
+.sn svg{width:20px;height:20px;stroke:var(--text3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}
+.sn.active{background:var(--orange)}
+.sn.active svg{stroke:#fff}
+.sn:not(.active):hover{background:var(--card2)}
+.sn:not(.active):hover svg{stroke:var(--text2)}
+.sb-bottom{display:flex;flex-direction:column;gap:4px;align-items:center}
+.theme-sn{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border:none;font-size:18px}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{padding:env(safe-area-inset-top,14px) 20px 12px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--bg)}
+.tb-left{}
+.tb-title{font-size:20px;font-weight:700;color:var(--text)}
+.tb-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.tb-right{display:flex;gap:8px;align-items:center}
+.tb-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;border:0.5px solid var(--border2);background:none;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tb-btn:hover{background:var(--card2);color:var(--text)}
+.tb-btn.danger{border-color:var(--red-border);color:var(--red)}
+.tb-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.body{flex:1;overflow:hidden;display:flex}
+
+/* SECTIONS */
+.section{display:none;flex:1;overflow:hidden}
+.section.active{display:flex}
+
+/* CALCULATOR SECTION */
+.calc-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:100%}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+
+.panel{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.panel-header{display:flex;align-items:center;gap:10px;padding-bottom:2px}
+.panel-bar{width:3px;height:20px;background:var(--orange);border-radius:2px}
+.panel-bar.green{background:var(--green)}
+.panel-title{font-size:16px;font-weight:700;color:var(--text)}
+
+/* FORM */
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.frow.single{grid-template-columns:1fr}
+.frow.triple{grid-template-columns:1fr 1fr 1fr}
+.field{}
+.field label{display:block;font-size:10px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.field input{width:100%;background:var(--card2);border:0.5px solid var(--border2);border-radius:8px;color:var(--text);font-size:14px;padding:10px 12px;outline:none;transition:border .2s,background .2s;-webkit-appearance:none}
+.field input:focus{border-color:var(--orange);background:#1a1200}
+.field input.highlight{border-color:var(--orange);color:var(--orange);background:var(--orange-bg);font-weight:600}
+.field input.highlight-green{border-color:var(--green);color:var(--green);background:var(--green-bg);font-weight:600}
+.field input[type=date]{color:var(--text2)}
+
+textarea.paste-area{width:100%;background:var(--card2);border:0.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:13px;padding:12px;resize:none;font-family:inherit;line-height:1.6;outline:none;transition:border .2s;min-height:90px}
+textarea.paste-area:focus{border-color:var(--orange)}
+textarea.paste-area::placeholder{color:var(--text3)}
+
+.btn-parse{width:100%;background:var(--orange);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;letter-spacing:.2px}
+.btn-parse:active{opacity:.8}
+.btn-parse.loading{opacity:.5;pointer-events:none}
+
+/* BREAKDOWN */
+.bk-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.bk-row:last-child{border:none}
 .bk-n{font-size:13px;color:var(--text2)}
-.bk-v{font-size:13px;font-weight:600}
-.bk-v.exp{color:var(--red)}.bk-v.gro{color:var(--text)}.bk-v.net{color:var(--green);font-size:15px}
-.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.btn-s{padding:12px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:opacity .2s;user-select:none}
-.btn-s:active{opacity:.7}
-.btn-save{background:var(--green-bg);color:var(--green);border:0.5px solid var(--green-border)}
-.btn-clear{background:var(--red-bg);color:var(--red);border:0.5px solid var(--red-border)}
-.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.field label{display:block;font-size:10px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
-.field input{width:100%;background:var(--input-bg);border:0.5px solid var(--border2);border-radius:8px;color:var(--text);font-size:14px;padding:10px 12px;outline:none;transition:border .2s,background .25s;-webkit-appearance:none}
-.field input:focus{border-color:var(--green)}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.stat-card{background:var(--card-bg);border:0.5px solid var(--border);border-radius:12px;padding:14px 16px;transition:background .25s}
-.stat-val{font-size:24px;font-weight:700;color:var(--text);margin-bottom:3px;line-height:1}
-.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
-.hist-item{background:var(--card-bg);border:0.5px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:8px;transition:border-color .2s,background .25s}
-.hi-route{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
-.hi-meta{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--text3)}
-.hi-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px;vertical-align:middle}
-.hi-profit{font-size:17px;font-weight:700}
-.hi-rpm{font-size:10px;color:var(--text3);text-align:right;margin-top:2px}
-.broker-item{background:var(--card-bg);border:0.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-.bi-name{font-size:13px;font-weight:600;color:var(--text)}
-.bi-loads{font-size:11px;color:var(--text3);margin-top:3px}
-.bi-rpm{font-size:16px;font-weight:700;color:var(--green)}
-.empty{text-align:center;padding:50px 20px;color:var(--text3);font-size:13px;line-height:1.8}
-.sfield{margin-bottom:14px}
-.sfield label{display:block;font-size:12px;color:var(--text2);font-weight:500;margin-bottom:7px}
-.sfield input{width:100%;background:var(--input-bg);border:0.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:15px;padding:12px 14px;outline:none;-webkit-appearance:none;transition:border .2s,background .25s}
-.sfield input:focus{border-color:var(--green)}
-.sdivider{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin:18px 0 12px;padding-bottom:8px;border-bottom:0.5px solid var(--border);font-weight:600}
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:13px;font-weight:700;padding:10px 24px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
-.toast.show{opacity:1}
-.neg-card{background:var(--neg-bg);border:0.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:10px}
-.neg-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;font-weight:600}
-.neg-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--text2)}
+.bk-v{font-size:13px;font-weight:600;color:var(--text2)}
+.bk-v.exp{color:var(--red)}
+.bk-v.total{color:var(--text);font-size:14px}
+
+.net-row{display:flex;justify-content:space-between;align-items:center;padding-top:4px}
+.net-label{font-size:18px;font-weight:700;color:var(--text)}
+.net-val{font-size:24px;font-weight:800}
+.net-val.g{color:var(--green)}.net-val.y{color:var(--yellow)}.net-val.r{color:var(--red)}.net-val.n{color:var(--text3)}
+
+.rpm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rpm-card{background:var(--card2);border-radius:10px;padding:14px;text-align:center}
+.rpm-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:6px}
+.rpm-val{font-size:22px;font-weight:800}
+.rpm-val.orange{color:var(--orange)}.rpm-val.g{color:var(--green)}.rpm-val.y{color:var(--yellow)}.rpm-val.r{color:var(--red)}.rpm-val.n{color:var(--text3)}
+
+.verdict-badge{text-align:center;padding:10px;border-radius:10px;font-size:13px;font-weight:700;letter-spacing:.5px;border:1px solid}
+.vb-green{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
+.vb-yellow{background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-border)}
+.vb-red{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.vb-neutral{background:var(--card2);color:var(--text3);border-color:var(--border)}
+
+.btn-save{width:100%;background:var(--green);color:#fff;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-save:active{opacity:.8}
+.btn-save svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+.neg-hint{background:var(--card2);border-radius:8px;padding:10px 12px}
+.neg-hint-title{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:6px}
+.neg-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:2px 0}
 .neg-row span:last-child{color:var(--text);font-weight:600}
-.del-btn{background:var(--red-bg);border:0.5px solid var(--red-border);color:var(--red);border-radius:6px;padding:4px 9px;font-size:11px;font-weight:600;cursor:pointer;margin-left:8px;flex-shrink:0}
+
+/* HISTORY SECTION */
+.hist-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:12px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px}
+@media(max-width:480px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+.stat-card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:14px}
+.stat-val{font-size:22px;font-weight:700;color:var(--text);line-height:1;margin-bottom:3px}
+.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+
+.hist-list{}
+.hist-item{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px}
+.hi-top{display:flex;justify-content:space-between;align-items:start;margin-bottom:8px}
+.hi-route{font-size:14px;font-weight:700;color:var(--text);flex:1;margin-right:10px}
+.hi-right{text-align:right;flex-shrink:0}
+.hi-profit{font-size:18px;font-weight:800}
+.hi-rpm{font-size:11px;color:var(--text3);margin-top:2px}
+.hi-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.hi-tag{background:var(--card2);border:0.5px solid var(--border2);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--text2)}
+.hi-tag.orange{background:var(--orange-bg);border-color:var(--orange-border);color:var(--orange)}
+.hi-bottom{display:flex;justify-content:space-between;align-items:center}
+.hi-date{font-size:11px;color:var(--text3)}
+.del-btn{background:var(--red-bg);border:0.5px solid var(--red-border);color:var(--red);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer}
+
+/* BROKERS SECTION */
+.brokers-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:10px}
+.broker-card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center}
+.bc-left{}
+.bc-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+.bc-mc{font-size:11px;color:var(--text3)}
+.bc-stats{display:flex;gap:12px;margin-top:6px}
+.bc-stat{font-size:11px;color:var(--text2)}
+.bc-stat span{color:var(--text);font-weight:600}
+.bc-rpm{text-align:right}
+.bc-rpm-val{font-size:22px;font-weight:800;color:var(--green)}
+.bc-rpm-lbl{font-size:10px;color:var(--text3)}
+
+/* SETTINGS SECTION */
+.settings-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
+.settings-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px}
+.sdivider{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:14px;padding-bottom:8px;border-bottom:0.5px solid var(--border)}
+.sfield{margin-bottom:14px}
+.sfield:last-child{margin-bottom:0}
+.sfield label{display:block;font-size:12px;color:var(--text2);font-weight:500;margin-bottom:7px}
+.sfield input{width:100%;background:var(--card2);border:0.5px solid var(--border2);border-radius:8px;color:var(--text);font-size:15px;padding:11px 13px;outline:none;-webkit-appearance:none;transition:border .2s}
+.sfield input:focus{border-color:var(--orange)}
+.btn-danger{width:100%;background:var(--red-bg);border:0.5px solid var(--red-border);color:var(--red);border-radius:10px;padding:13px;font-size:13px;font-weight:600;cursor:pointer}
+
+.empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:13px;line-height:1.9}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:13px;font-weight:700;padding:10px 24px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1}
+
+.mode-toggle{display:grid;grid-template-columns:1fr 1fr;background:var(--card2);border-radius:8px;padding:3px;border:0.5px solid var(--border)}
+.mt-btn{padding:8px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;text-align:center;color:var(--text3);border:none;background:none;transition:all .15s}
+.mt-btn.active{background:var(--orange);color:#fff}
+
+.ai-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--orange);margin-bottom:8px}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 </style>
 </head>
-<body class="light">
+<body>
 <div class="app">
-  <div class="statusbar">
-    <div class="sb-inner">
-      <div class="sb-logo">
-        <div class="sb-icon">HS</div>
-        <div>
-          <div class="sb-name">HotShot Pro</div>
-          <div class="sb-sub">Load Evaluator</div>
-        </div>
-      </div>
-      <div class="sb-right">
-        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
-        <div class="sb-count" id="sb-count">0 loads</div>
-      </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-logo">HS</div>
+    <div class="sb-nav">
+      <button class="sn active" id="sn-calc" onclick="showSec('calc')">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </button>
+      <button class="sn" id="sn-hist" onclick="showSec('hist')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+      </button>
+      <button class="sn" id="sn-brokers" onclick="showSec('brokers')">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </button>
+      <button class="sn" id="sn-settings" onclick="showSec('settings')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+    <div class="sb-bottom">
+      <button class="theme-sn" id="theme-btn" onclick="toggleTheme()">🌙</button>
     </div>
   </div>
 
-  <div class="scroll-body" id="scroll-body">
-
-    <div class="section active" id="sec-eval">
-      <div class="mode-toggle">
-        <button class="mt-btn active" id="mt-paste" onclick="setMode('paste')">Paste Text</button>
-        <button class="mt-btn" id="mt-manual" onclick="setMode('manual')">Manual</button>
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="tb-left">
+        <div class="tb-title" id="tb-title">Load Calculator</div>
+        <div class="tb-sub" id="tb-sub">Evalúa la rentabilidad de tu carga</div>
       </div>
-
-      <div id="pane-paste">
-        <div class="card">
-          <div class="ai-badge"><div class="ai-dot"></div>AI Parser activo</div>
-          <div class="card-title">Pega el mensaje del load</div>
-          <textarea id="raw-text" rows="7" placeholder="Ejemplo:&#10;&#10;San Antonio, TX - Lewisville, TX&#10;PU: Tomorrow morning DEL: Saturday 8am&#10;8000 LBS miles: 297 DH: 00 $750&#10;MC#1647198 MAYBELL INDUSTRIES LLC"></textarea>
-          <button class="btn-main" id="parse-btn" onclick="runAI()">Analizar con IA →</button>
-        </div>
+      <div class="tb-right" id="tb-right">
+        <button class="tb-btn danger" onclick="clearAll()">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+          Clear
+        </button>
+        <button class="tb-btn" onclick="setMode('paste');document.getElementById('raw-text').focus()">
+          <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+          Paste Text
+        </button>
+        <div class="sb-count" id="sb-count" style="font-size:11px;color:var(--text3);background:var(--card);border:0.5px solid var(--border);padding:6px 12px;border-radius:20px">0 loads</div>
       </div>
+    </div>
 
-      <div id="pane-manual" style="display:none">
-        <div class="card">
-          <div class="card-title">Datos del load</div>
-          <div class="fgrid">
-            <div class="field"><label>PU Date</label><input id="f-pudate" type="date"/></div>
-            <div class="field"><label>DEL Date</label><input id="f-deldate" type="date"/></div>
-            <div class="field"><label>Pickup</label><input id="f-pu" placeholder="San Antonio, TX"/></div>
-            <div class="field"><label>Delivery</label><input id="f-del" placeholder="Lewisville, TX"/></div>
-            <div class="field"><label>Loaded Miles</label><input id="f-mi" type="number" inputmode="decimal" placeholder="297"/></div>
-            <div class="field"><label>Deadhead (DH)</label><input id="f-dh" type="number" inputmode="decimal" placeholder="0"/></div>
-            <div class="field"><label>Gross Pay $</label><input id="f-pay" type="number" inputmode="decimal" placeholder="750"/></div>
-            <div class="field"><label>Weight lbs</label><input id="f-wt" type="number" inputmode="decimal" placeholder="8000"/></div>
-            <div class="field"><label>Broker</label><input id="f-br" placeholder="MAYBELL LLC"/></div>
-            <div class="field"><label>MC Number</label><input id="f-mc" placeholder="1647198"/></div>
+    <div class="body">
+
+      <!-- CALCULATOR -->
+      <div class="section active" id="sec-calc">
+        <div class="calc-body">
+          <div class="two-col">
+
+            <!-- LEFT: LOAD DETAILS -->
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-bar"></div>
+                <div class="panel-title">Load Details</div>
+              </div>
+
+              <div class="mode-toggle">
+                <button class="mt-btn active" id="mt-paste" onclick="setMode('paste')">Paste Text</button>
+                <button class="mt-btn" id="mt-manual" onclick="setMode('manual')">Manual</button>
+              </div>
+
+              <div id="pane-paste">
+                <div class="ai-badge"><div class="ai-dot"></div>AI Parser activo</div>
+                <textarea class="paste-area" id="raw-text" rows="5" placeholder="Pega el mensaje del load aquí:&#10;&#10;San Antonio, TX - Lewisville, TX&#10;PU: Tomorrow DEL: Saturday 8am&#10;8000 LBS miles: 297 DH: 00 $750&#10;MC#1647198 MAYBELL INDUSTRIES LLC"></textarea>
+                <button class="btn-parse" id="parse-btn" onclick="runAI()" style="margin-top:10px">Analizar con IA →</button>
+              </div>
+
+              <div id="pane-manual" style="display:none"></div>
+
+              <!-- FIELDS (shared, always visible) -->
+              <div id="fields-area">
+                <div class="frow">
+                  <div class="field"><label>Broker Name</label><input id="f-br" placeholder="MAYBELL LLC" oninput="liveCalc()"/></div>
+                  <div class="field"><label>MC Number</label><input id="f-mc" placeholder="1647198" oninput="liveCalc()"/></div>
+                </div>
+                <div class="frow">
+                  <div class="field"><label>Pick Up</label><input id="f-pu" placeholder="San Antonio, TX" oninput="liveCalc()"/></div>
+                  <div class="field"><label>Deliver</label><input id="f-del" placeholder="Lewisville, TX" oninput="liveCalc()"/></div>
+                </div>
+                <div class="frow">
+                  <div class="field"><label>PU Date</label><input id="f-pudate" type="date" oninput="liveCalc()"/></div>
+                  <div class="field"><label>DEL Date</label><input id="f-deldate" type="date" oninput="liveCalc()"/></div>
+                </div>
+                <div class="frow">
+                  <div class="field"><label>Deadhead Miles</label><input id="f-dh" type="number" inputmode="decimal" placeholder="0" value="0" oninput="liveCalc()"/></div>
+                  <div class="field"><label>Loaded Miles</label><input id="f-mi" type="number" inputmode="decimal" placeholder="297" class="highlight" oninput="liveCalc()"/></div>
+                </div>
+                <div class="frow triple">
+                  <div class="field"><label>Gross Pay ($)</label><input id="f-pay" type="number" inputmode="decimal" placeholder="750" class="highlight-green" oninput="liveCalc()"/></div>
+                  <div class="field"><label>Diesel ($/gal)</label><input id="f-diesel-local" type="number" inputmode="decimal" placeholder="5.40" oninput="liveCalc()"/></div>
+                  <div class="field"><label>Truck MPG</label><input id="f-mpg-local" type="number" inputmode="decimal" placeholder="6" oninput="liveCalc()"/></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: PROFITABILITY -->
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-bar green"></div>
+                <div class="panel-title">Profitability Breakdown</div>
+              </div>
+
+              <div class="bk-row"><span class="bk-n">Total Miles:</span><span class="bk-v total" id="b-totmi">— mi</span></div>
+              <div class="bk-row"><span class="bk-n">Driver (<span id="b-drvpct">25</span>%):</span><span class="bk-v exp" id="b-drv">—</span></div>
+              <div class="bk-row"><span class="bk-n">Diesel (Estimated):</span><span class="bk-v exp" id="b-diesel">—</span></div>
+              <div class="bk-row"><span class="bk-n">Maintenance (<span id="b-mntpct">10</span>%):</span><span class="bk-v exp" id="b-mnt">—</span></div>
+              <div class="bk-row"><span class="bk-n">Dispatcher (<span id="b-dispct">5</span>%):</span><span class="bk-v exp" id="b-dis">—</span></div>
+              <div class="bk-row"><span class="bk-n">Factoring (<span id="b-facpct">2.5</span>%):</span><span class="bk-v exp" id="b-fac">—</span></div>
+              <div class="bk-row"><span class="bk-n">Total Expenses:</span><span class="bk-v total" id="b-total-exp">—</span></div>
+
+              <div class="net-row">
+                <div class="net-label">Net Profit:</div>
+                <div class="net-val n" id="b-net">—</div>
+              </div>
+
+              <div class="rpm-grid">
+                <div class="rpm-card">
+                  <div class="rpm-label">Global RPM</div>
+                  <div class="rpm-val orange" id="rpm-gross">$—</div>
+                </div>
+                <div class="rpm-card">
+                  <div class="rpm-label">Net RPM</div>
+                  <div class="rpm-val n" id="rpm-net">$—</div>
+                </div>
+              </div>
+
+              <div class="verdict-badge vb-neutral" id="verdict-badge">Pendiente</div>
+
+              <div class="neg-hint" id="neg-hint" style="display:none">
+                <div class="neg-hint-title">Para llegar a tu RPM mínimo necesitas pedir:</div>
+                <div class="neg-row"><span>RPM mínimo ($<span id="neg-min">1.80</span>)</span><span id="neg-target">—</span></div>
+                <div class="neg-row"><span>RPM ideal ($<span id="neg-ideal-lbl">2.50</span>)</span><span id="neg-ideal">—</span></div>
+              </div>
+
+              <button class="btn-save" id="save-btn" onclick="saveLoad()">
+                <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Accept &amp; Save Load
+              </button>
+            </div>
+
           </div>
-          <button class="btn-main" onclick="calcManual()">Calcular →</button>
         </div>
       </div>
 
-      <div class="verdict-card vc-neutral" id="vcard">
-        <div class="verdict-top">
-          <div class="verdict-label">Decisión inmediata</div>
-          <div class="vbadge vb-neutral" id="vbadge">Pendiente</div>
-        </div>
-        <div class="kpis">
-          <div class="kpi"><div class="kpi-v n" id="kv-net">—</div><div class="kpi-l">Net Profit</div></div>
-          <div class="kpi"><div class="kpi-v n" id="kv-rpm">—</div><div class="kpi-l">Net RPM</div></div>
-          <div class="kpi"><div class="kpi-v n" id="kv-ppm">—</div><div class="kpi-l">$/Mi loaded</div></div>
-        </div>
-      </div>
-
-      <div class="card" id="parsed-fields" style="display:none">
-        <div class="card-title">Campos extraídos — edita si necesario</div>
-        <div class="fgrid">
-          <div class="field"><label>PU Date</label><input id="pf-pudate" type="date" oninput="recalcParsed()"/></div>
-          <div class="field"><label>DEL Date</label><input id="pf-deldate" type="date"/></div>
-          <div class="field"><label>Pickup</label><input id="pf-pu" oninput="recalcParsed()"/></div>
-          <div class="field"><label>Delivery</label><input id="pf-del" oninput="recalcParsed()"/></div>
-          <div class="field"><label>Loaded Miles</label><input id="pf-mi" type="number" inputmode="decimal" oninput="recalcParsed()"/></div>
-          <div class="field"><label>Deadhead</label><input id="pf-dh" type="number" inputmode="decimal" oninput="recalcParsed()"/></div>
-          <div class="field"><label>Gross Pay $</label><input id="pf-pay" type="number" inputmode="decimal" oninput="recalcParsed()"/></div>
-          <div class="field"><label>Weight lbs</label><input id="pf-wt" type="number" inputmode="decimal"/></div>
-          <div class="field"><label>Broker</label><input id="pf-br"/></div>
-          <div class="field"><label>MC Number</label><input id="pf-mc" placeholder="1647198"/></div>
+      <!-- HISTORY -->
+      <div class="section" id="sec-hist">
+        <div class="hist-body">
+          <div class="stats-row">
+            <div class="stat-card"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">Loads</div></div>
+            <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="st-rpm">—</div><div class="stat-lbl">Avg Net RPM</div></div>
+            <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="st-profit">—</div><div class="stat-lbl">Profit Total</div></div>
+            <div class="stat-card"><div class="stat-val" id="st-miles">—</div><div class="stat-lbl">Millas</div></div>
+          </div>
+          <div class="hist-list" id="hist-list">
+            <div class="empty">Sin loads guardados.<br>Evalúa y guarda tu primer load.</div>
+          </div>
         </div>
       </div>
 
-      <div class="card" id="breakdown" style="display:none">
-        <div class="card-title">Desglose de costos</div>
-        <div class="bk-row"><span class="bk-n">Gross Pay</span><span class="bk-v gro" id="b-gross">—</span></div>
-        <div class="bk-row"><span class="bk-n">Diesel</span><span class="bk-v exp" id="b-diesel">—</span></div>
-        <div class="bk-row"><span class="bk-n">Driver (<span id="b-drv-pct">25</span>%)</span><span class="bk-v exp" id="b-drv">—</span></div>
-        <div class="bk-row"><span class="bk-n">Dispatcher (<span id="b-dis-pct">5</span>%)</span><span class="bk-v exp" id="b-dis">—</span></div>
-        <div class="bk-row"><span class="bk-n">Factoring (<span id="b-fac-pct">2.5</span>%)</span><span class="bk-v exp" id="b-fac">—</span></div>
-        <div class="bk-row"><span class="bk-n">Mantenimiento (<span id="b-mnt-pct">10</span>%)</span><span class="bk-v exp" id="b-mnt">—</span></div>
-        <div class="bk-row"><span class="bk-n" style="color:var(--text);font-weight:600">Net Profit</span><span class="bk-v net" id="b-net">—</span></div>
-        <div class="neg-card" id="neg-box" style="display:none">
-          <div class="neg-title">Para llegar a tu RPM mínimo necesitas pedir:</div>
-          <div class="neg-row"><span>RPM mínimo ($<span id="neg-min-rpm">1.80</span>)</span><span id="neg-target">—</span></div>
-          <div class="neg-row"><span>RPM ideal ($<span id="neg-ideal-rpm">2.50</span>)</span><span id="neg-ideal">—</span></div>
-        </div>
-        <div class="btn-row">
-          <button class="btn-s btn-save" id="save-btn" onclick="saveLoad()">Guardar Load</button>
-          <button class="btn-s btn-clear" onclick="clearAll()">Limpiar</button>
+      <!-- BROKERS -->
+      <div class="section" id="sec-brokers">
+        <div class="brokers-body">
+          <div id="broker-list"><div class="empty">Guarda loads para ver el ranking de brokers.</div></div>
         </div>
       </div>
-    </div>
 
-    <div class="section" id="sec-hist">
-      <div class="stat-grid">
-        <div class="stat-card"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">Loads totales</div></div>
-        <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="st-rpm">—</div><div class="stat-lbl">Avg Net RPM</div></div>
-        <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="st-profit">—</div><div class="stat-lbl">Profit total</div></div>
-        <div class="stat-card"><div class="stat-val" id="st-miles">—</div><div class="stat-lbl">Millas totales</div></div>
+      <!-- SETTINGS -->
+      <div class="section" id="sec-settings">
+        <div class="settings-body">
+          <div class="settings-card">
+            <div class="sdivider">Mi Troca</div>
+            <div class="sfield"><label>MPG — millas por galón</label><input id="cfg-mpg" type="number" inputmode="decimal" value="6" step="0.5" oninput="saveCfg()"/></div>
+            <div class="sfield"><label>Precio diesel ($/galón)</label><input id="cfg-diesel" type="number" inputmode="decimal" value="5.40" step="0.05" oninput="saveCfg()"/></div>
+          </div>
+          <div class="settings-card">
+            <div class="sdivider">Umbrales de Decisión (Net RPM)</div>
+            <div class="sfield"><label>Verde — buena carga (encima de)</label><input id="cfg-green" type="number" inputmode="decimal" value="2.50" step="0.10" oninput="saveCfg()"/></div>
+            <div class="sfield"><label>Amarillo — negociar (encima de)</label><input id="cfg-yellow" type="number" inputmode="decimal" value="1.80" step="0.10" oninput="saveCfg()"/></div>
+          </div>
+          <div class="settings-card">
+            <div class="sdivider">Porcentajes de Gastos</div>
+            <div class="sfield"><label>Driver Pay %</label><input id="cfg-drv" type="number" inputmode="decimal" value="25" step="1" oninput="saveCfg()"/></div>
+            <div class="sfield"><label>Dispatcher %</label><input id="cfg-disp" type="number" inputmode="decimal" value="5" step="1" oninput="saveCfg()"/></div>
+            <div class="sfield"><label>Factoring %</label><input id="cfg-fact" type="number" inputmode="decimal" value="2.5" step="0.5" oninput="saveCfg()"/></div>
+            <div class="sfield"><label>Mantenimiento %</label><input id="cfg-mnt" type="number" inputmode="decimal" value="10" step="1" oninput="saveCfg()"/></div>
+          </div>
+          <div class="settings-card">
+            <div class="sdivider">Datos</div>
+            <button class="btn-danger" onclick="clearData()">Borrar todos los loads</button>
+          </div>
+        </div>
       </div>
-      <div id="hist-list"><div class="empty">Sin loads guardados aún.<br>Evalúa y guarda tu primer load.</div></div>
-    </div>
 
-    <div class="section" id="sec-brokers">
-      <div class="card">
-        <div class="card-title">Ranking de brokers por RPM</div>
-        <div id="broker-list"><div class="empty">Guarda loads para ver<br>el ranking de brokers.</div></div>
-      </div>
-    </div>
-
-    <div class="section" id="sec-settings">
-      <div class="card">
-        <div class="sdivider">Mi troca</div>
-        <div class="sfield"><label>MPG — millas por galón</label><input id="cfg-mpg" type="number" inputmode="decimal" value="6" step="0.5" oninput="saveCfg()"/></div>
-        <div class="sfield"><label>Precio diesel ($ por galón)</label><input id="cfg-diesel" type="number" inputmode="decimal" value="5.40" step="0.05" oninput="saveCfg()"/></div>
-        <div class="sdivider">Umbrales de decisión (Net RPM)</div>
-        <div class="sfield"><label>Verde — buena carga (encima de)</label><input id="cfg-green" type="number" inputmode="decimal" value="2.50" step="0.10" oninput="saveCfg()"/></div>
-        <div class="sfield"><label>Amarillo — negociar (encima de)</label><input id="cfg-yellow" type="number" inputmode="decimal" value="1.80" step="0.10" oninput="saveCfg()"/></div>
-        <div class="sdivider">Porcentajes de gastos</div>
-        <div class="sfield"><label>Driver Pay %</label><input id="cfg-drv" type="number" inputmode="decimal" value="25" step="1" oninput="saveCfg()"/></div>
-        <div class="sfield"><label>Dispatcher %</label><input id="cfg-disp" type="number" inputmode="decimal" value="5" step="1" oninput="saveCfg()"/></div>
-        <div class="sfield"><label>Factoring %</label><input id="cfg-fact" type="number" inputmode="decimal" value="2.5" step="0.5" oninput="saveCfg()"/></div>
-        <div class="sfield"><label>Mantenimiento %</label><input id="cfg-mnt" type="number" inputmode="decimal" value="10" step="1" oninput="saveCfg()"/></div>
-        <div class="sdivider">Datos</div>
-        <button class="btn-s btn-clear" style="width:100%;padding:13px;border-radius:10px;font-size:13px" onclick="clearData()">Borrar todos los loads</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="tab-nav">
-    <div class="tn active" id="tn-eval" onclick="showSec('eval')">
-      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      <span>Evaluar</span>
-    </div>
-    <div class="tn" id="tn-hist" onclick="showSec('hist')">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
-      <span>Historial</span>
-    </div>
-    <div class="tn" id="tn-brokers" onclick="showSec('brokers')">
-      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      <span>Brokers</span>
-    </div>
-    <div class="tn" id="tn-settings" onclick="showSec('settings')">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      <span>Config</span>
     </div>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-let loads=[],currentLoad=null,parseMode='paste',isDark=false;
+let loads=[], currentCalc=null, isDark=true;
 let cfg={mpg:6,diesel:5.40,green:2.50,yellow:1.80,drv:25,disp:5,fact:2.5,mnt:10};
 
+/* ── INIT ── */
 function init(){
-  try{const s=localStorage.getItem('hs_loads');if(s)loads=JSON.parse(s)||[];}catch(e){}
-  try{const s=localStorage.getItem('hs_cfg');if(s)cfg=Object.assign(cfg,JSON.parse(s));}catch(e){}
-  try{isDark=localStorage.getItem('hs_theme')==='dark';applyTheme();}catch(e){}
-  applyCfg();updateCount();
+  try{const s=localStorage.getItem('hs_loads');if(s){loads=JSON.parse(s);if(!Array.isArray(loads))loads=[];}}catch(e){loads=[];}
+  try{const s=localStorage.getItem('hs_cfg');if(s)cfg=Object.assign({},cfg,JSON.parse(s));}catch(e){}
+  try{isDark=localStorage.getItem('hs_theme')!=='light';applyTheme();}catch(e){}
+  applyCfg();
+  syncLocalFields();
+  updateCount();
+  liveCalc();
 }
 
 function applyTheme(){
-  document.body.className=isDark?'dark':'light';
+  if(isDark){
+    document.documentElement.style.setProperty('--bg','#0f0f0f');
+    document.documentElement.style.setProperty('--sidebar','#1a1a1a');
+    document.documentElement.style.setProperty('--card','#1e1e1e');
+    document.documentElement.style.setProperty('--card2','#252525');
+    document.documentElement.style.setProperty('--border','#2a2a2a');
+    document.documentElement.style.setProperty('--border2','#333');
+    document.documentElement.style.setProperty('--text','#f5f5f5');
+    document.documentElement.style.setProperty('--text2','#aaa');
+    document.documentElement.style.setProperty('--text3','#666');
+  }else{
+    document.documentElement.style.setProperty('--bg','#f2f4f8');
+    document.documentElement.style.setProperty('--sidebar','#ffffff');
+    document.documentElement.style.setProperty('--card','#ffffff');
+    document.documentElement.style.setProperty('--card2','#f0f2f6');
+    document.documentElement.style.setProperty('--border','#e0e4ed');
+    document.documentElement.style.setProperty('--border2','#ccd0dc');
+    document.documentElement.style.setProperty('--text','#0f1923');
+    document.documentElement.style.setProperty('--text2','#4a5568');
+    document.documentElement.style.setProperty('--text3','#8896aa');
+    document.documentElement.style.setProperty('--orange-bg','#fff3ec');
+    document.documentElement.style.setProperty('--green-bg','#edfaf4');
+    document.documentElement.style.setProperty('--red-bg','#fff0f0');
+  }
   document.getElementById('theme-btn').textContent=isDark?'☀️':'🌙';
-  const m=document.getElementById('theme-color-meta');
-  if(m)m.content=isDark?'#0a0c10':'#ffffff';
 }
 
 function toggleTheme(){
@@ -308,13 +433,20 @@ function toggleTheme(){
   applyTheme();
 }
 
-function save(){
-  try{localStorage.setItem('hs_loads',JSON.stringify(loads));localStorage.setItem('hs_cfg',JSON.stringify(cfg));}catch(e){}
+function syncLocalFields(){
+  const d=document.getElementById('f-diesel-local');
+  const m=document.getElementById('f-mpg-local');
+  if(d&&!d.value)d.value=cfg.diesel;
+  if(m&&!m.value)m.value=cfg.mpg;
 }
 
 function applyCfg(){
   const map={'cfg-mpg':cfg.mpg,'cfg-diesel':cfg.diesel,'cfg-green':cfg.green,'cfg-yellow':cfg.yellow,'cfg-drv':cfg.drv,'cfg-disp':cfg.disp,'cfg-fact':cfg.fact,'cfg-mnt':cfg.mnt};
   Object.keys(map).forEach(id=>{const el=document.getElementById(id);if(el)el.value=map[id];});
+  ['b-drvpct','b-dispct','b-facpct','b-mntpct'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=[cfg.drv,cfg.disp,cfg.fact,cfg.mnt][i];
+  });
 }
 
 function saveCfg(){
@@ -326,34 +458,46 @@ function saveCfg(){
   cfg.disp=parseFloat(document.getElementById('cfg-disp').value)||5;
   cfg.fact=parseFloat(document.getElementById('cfg-fact').value)||2.5;
   cfg.mnt=parseFloat(document.getElementById('cfg-mnt').value)||10;
-  save();
+  saveStorage();
+  applyCfg();
+  liveCalc();
 }
 
-function setMode(m){
-  parseMode=m;
-  document.getElementById('pane-paste').style.display=m==='paste'?'block':'none';
-  document.getElementById('pane-manual').style.display=m==='manual'?'block':'none';
-  document.getElementById('mt-paste').classList.toggle('active',m==='paste');
-  document.getElementById('mt-manual').classList.toggle('active',m!=='paste');
-  clearResults();
+function saveStorage(){
+  try{localStorage.setItem('hs_loads',JSON.stringify(loads));}catch(e){}
+  try{localStorage.setItem('hs_cfg',JSON.stringify(cfg));}catch(e){}
 }
 
+/* ── NAVIGATION ── */
 function showSec(s){
-  ['eval','hist','brokers','settings'].forEach(x=>{
+  ['calc','hist','brokers','settings'].forEach(x=>{
     document.getElementById('sec-'+x).classList.toggle('active',x===s);
-    document.getElementById('tn-'+x).classList.toggle('active',x===s);
+    document.getElementById('sn-'+x).classList.toggle('active',x===s);
   });
+  const titles={calc:'Load Calculator',hist:'Load History',brokers:'Broker Ranking',settings:'Settings'};
+  const subs={calc:'Evalúa la rentabilidad de tu carga',hist:'Todas tus cargas guardadas',brokers:'Ranking de brokers por RPM',settings:'Configura tu operación'};
+  document.getElementById('tb-title').textContent=titles[s];
+  document.getElementById('tb-sub').textContent=subs[s];
+  document.getElementById('tb-right').style.display=s==='calc'?'flex':'none';
   if(s==='hist')renderHist();
   if(s==='brokers')renderBrokers();
-  document.getElementById('scroll-body').scrollTop=0;
 }
 
+/* ── MODE ── */
+function setMode(m){
+  document.getElementById('pane-paste').style.display=m==='paste'?'block':'none';
+  document.getElementById('mt-paste').classList.toggle('active',m==='paste');
+  document.getElementById('mt-manual').classList.toggle('active',m!=='paste');
+}
+
+/* ── TOAST ── */
 function toast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2200);
 }
 
+/* ── DATE PARSER ── */
 function parseDateStr(str){
   if(!str)return'';
   const today=new Date();const s=(str||'').toLowerCase();
@@ -366,64 +510,34 @@ function parseDateStr(str){
   return'';
 }
 
+/* ── AI PARSER ── */
 async function runAI(){
   const text=document.getElementById('raw-text').value.trim();
   if(!text){toast('Pega el texto del load primero');return;}
   const btn=document.getElementById('parse-btn');
   btn.textContent='Analizando...';btn.classList.add('loading');
-  document.getElementById('parsed-fields').style.display='none';
-  document.getElementById('breakdown').style.display='none';
-  const prompt=`Extract from this trucking load message and return ONLY valid JSON (no markdown) with: pickup, delivery, pickup_date (string like "Tomorrow morning"), delivery_date (string), loaded_miles (number), deadhead_miles (number default 0), gross_pay (number), weight_lbs (number or null), broker_name (string or null), mc_number (string or null). Message: """${text}"""`;
+  const prompt=`Extract from this trucking load message and return ONLY valid JSON (no markdown) with: pickup, delivery, pickup_date (string like "Tomorrow morning" or "Saturday"), delivery_date (string), loaded_miles (number), deadhead_miles (number default 0), gross_pay (number), weight_lbs (number or null), broker_name (string or null), mc_number (string or null). Message: """${text}"""`;
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
     const raw=data.content.map(c=>c.text||'').join('');
     const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    fillParsed(parsed);
-    document.getElementById('parsed-fields').style.display='block';
-    calcFromParsed(parsed);
-    toast('Load analizado');
+    fillFields(parsed);toast('Load analizado');
   }catch(e){fallbackParse(text);toast('Parseado (modo básico)');}
   btn.textContent='Analizar con IA →';btn.classList.remove('loading');
 }
 
-function fillParsed(p){
-  document.getElementById('pf-pu').value=p.pickup||'';
-  document.getElementById('pf-del').value=p.delivery||'';
-  document.getElementById('pf-mi').value=p.loaded_miles||'';
-  document.getElementById('pf-dh').value=p.deadhead_miles||0;
-  document.getElementById('pf-pay').value=p.gross_pay||'';
-  document.getElementById('pf-wt').value=p.weight_lbs||'';
-  document.getElementById('pf-br').value=p.broker_name||'';
-  document.getElementById('pf-mc').value=p.mc_number||'';
-  document.getElementById('pf-pudate').value=parseDateStr(p.pickup_date||'');
-  document.getElementById('pf-deldate').value=parseDateStr(p.delivery_date||'');
-}
-
-function recalcParsed(){
-  calcFromParsed({
-    pickup:document.getElementById('pf-pu').value,
-    delivery:document.getElementById('pf-del').value,
-    loaded_miles:parseFloat(document.getElementById('pf-mi').value)||0,
-    deadhead_miles:parseFloat(document.getElementById('pf-dh').value)||0,
-    gross_pay:parseFloat(document.getElementById('pf-pay').value)||0,
-    weight_lbs:document.getElementById('pf-wt').value,
-    broker_name:document.getElementById('pf-br').value,
-    mc_number:document.getElementById('pf-mc').value
-  });
-}
-
-function calcFromParsed(p){
-  compute({
-    pickup:p.pickup,delivery:p.delivery,
-    miles:parseFloat(p.loaded_miles)||0,
-    dh:parseFloat(p.deadhead_miles)||0,
-    pay:parseFloat(p.gross_pay)||0,
-    weight:p.weight_lbs,broker:p.broker_name,mc:p.mc_number,
-    pudate:document.getElementById('pf-pudate').value,
-    deldate:document.getElementById('pf-deldate').value,
-    raw:document.getElementById('raw-text').value
-  });
+function fillFields(p){
+  document.getElementById('f-pu').value=p.pickup||'';
+  document.getElementById('f-del').value=p.delivery||'';
+  document.getElementById('f-mi').value=p.loaded_miles||'';
+  document.getElementById('f-dh').value=p.deadhead_miles||0;
+  document.getElementById('f-pay').value=p.gross_pay||'';
+  document.getElementById('f-br').value=p.broker_name||'';
+  document.getElementById('f-mc').value=p.mc_number||'';
+  document.getElementById('f-pudate').value=parseDateStr(p.pickup_date||'');
+  document.getElementById('f-deldate').value=parseDateStr(p.delivery_date||'');
+  liveCalc();
 }
 
 function fallbackParse(text){
@@ -433,181 +547,240 @@ function fallbackParse(text){
   const mm=text.match(/miles?\s*:?\s*(\d+)/i);if(mm)d.loaded_miles=parseInt(mm[1]);
   const dm=text.match(/dh\s*:?\s*(\d+)/i);d.deadhead_miles=dm?parseInt(dm[1]):0;
   const pm=text.match(/\$\s*([\d,]+)/);if(pm)d.gross_pay=parseFloat(pm[1].replace(',',''));
-  const wm=text.match(/([\d,]+)\s*lbs/i);if(wm)d.weight_lbs=parseInt(wm[1]);
   const bm=text.match(/([A-Z][A-Z\s]+(?:LLC|INC|CORP|INDUSTRIES|TRANSPORT|LOGISTICS|FREIGHT))/i);if(bm)d.broker_name=bm[1].trim();
   const mc=text.match(/mc#?\s*([\d]+)/i);if(mc)d.mc_number=mc[1];
-  const pu=text.match(/pu\s*:?\s*([^\n]+)/i);if(pu)d.pickup_date=pu[1].trim();
-  const del=text.match(/del\s*:?\s*([^\n]+)/i);if(del)d.delivery_date=del[1].trim();
-  fillParsed(d);
-  document.getElementById('parsed-fields').style.display='block';
-  calcFromParsed(d);
+  const pu=text.match(/pu\s*:?\s*([^\n\r]+)/i);if(pu)d.pickup_date=pu[1].trim();
+  const del=text.match(/del\s*:?\s*([^\n\r]+)/i);if(del)d.delivery_date=del[1].trim();
+  fillFields(d);
 }
 
-function calcManual(){
-  compute({
+/* ── LIVE CALC ── */
+function liveCalc(){
+  const miles=parseFloat(document.getElementById('f-mi').value)||0;
+  const dh=parseFloat(document.getElementById('f-dh').value)||0;
+  const pay=parseFloat(document.getElementById('f-pay').value)||0;
+  const dieselPrice=parseFloat(document.getElementById('f-diesel-local').value)||cfg.diesel;
+  const mpg=parseFloat(document.getElementById('f-mpg-local').value)||cfg.mpg;
+  const tot=miles+dh;
+  const fuel=(tot/mpg)*dieselPrice;
+  const drv=pay*(cfg.drv/100);
+  const dis=pay*(cfg.disp/100);
+  const fac=pay*(cfg.fact/100);
+  const mnt=pay*(cfg.mnt/100);
+  const totalExp=fuel+drv+dis+fac+mnt;
+  const net=pay-totalExp;
+  const grossRPM=tot>0?pay/tot:0;
+  const netRPM=tot>0?net/tot:0;
+  const ppm=miles>0?net/miles:0;
+
+  currentCalc={
     pickup:document.getElementById('f-pu').value,
     delivery:document.getElementById('f-del').value,
-    miles:parseFloat(document.getElementById('f-mi').value)||0,
-    dh:parseFloat(document.getElementById('f-dh').value)||0,
-    pay:parseFloat(document.getElementById('f-pay').value)||0,
-    weight:document.getElementById('f-wt').value,
     broker:document.getElementById('f-br').value,
     mc:document.getElementById('f-mc').value,
     pudate:document.getElementById('f-pudate').value,
     deldate:document.getElementById('f-deldate').value,
-    raw:'Manual entry'
-  });
-}
+    miles,dh,tot,pay,fuel,drv,dis,fac,mnt,totalExp,net,grossRPM,netRPM,ppm,
+    date:new Date().toLocaleDateString('en-US')
+  };
 
-function compute(d){
-  const tot=d.miles+d.dh;
-  const fuel=(tot/cfg.mpg)*cfg.diesel;
-  const drv=d.pay*(cfg.drv/100);
-  const dis=d.pay*(cfg.disp/100);
-  const fac=d.pay*(cfg.fact/100);
-  const mnt=d.pay*(cfg.mnt/100);
-  const net=d.pay-fuel-drv-dis-fac-mnt;
-  const rpm=tot>0?net/tot:0;
-  const ppm=d.miles>0?net/d.miles:0;
-  currentLoad={...d,tot,fuel,drv,dis,fac,mnt,net,rpm,ppm,gross:d.pay,date:new Date().toLocaleDateString('en-US')};
-  renderVerdict(net,rpm,ppm);
-  renderBreakdown(d.pay,fuel,drv,dis,fac,mnt,net,tot);
-  document.getElementById('breakdown').style.display='block';
-  document.getElementById('scroll-body').scrollTop=0;
-}
+  if(pay===0){resetBreakdown();return;}
 
-function renderVerdict(net,rpm,ppm){
-  let cls,bcls,label;
-  if(rpm>=cfg.green){cls='vc-green';bcls='vb-green';label='TOMAR CARGA';}
-  else if(rpm>=cfg.yellow){cls='vc-yellow';bcls='vb-yellow';label='NEGOCIAR';}
-  else{cls='vc-red';bcls='vb-red';label='RECHAZAR';}
-  document.getElementById('vcard').className='verdict-card '+cls;
-  const vb=document.getElementById('vbadge');vb.className='vbadge '+bcls;vb.textContent=label;
-  const mc=rpm>=cfg.green?'g':rpm>=cfg.yellow?'y':'r';
-  ['kv-net','kv-rpm','kv-ppm'].forEach(id=>document.getElementById(id).className='kpi-v '+mc);
-  document.getElementById('kv-net').textContent=(net>=0?'+$':'-$')+Math.abs(net).toFixed(0);
-  document.getElementById('kv-rpm').textContent='$'+rpm.toFixed(2);
-  document.getElementById('kv-ppm').textContent='$'+ppm.toFixed(2);
-}
-
-function renderBreakdown(gross,fuel,drv,dis,fac,mnt,net,tot){
-  document.getElementById('b-gross').textContent='$'+gross.toFixed(2);
-  document.getElementById('b-diesel').textContent='-$'+fuel.toFixed(2);
+  document.getElementById('b-totmi').textContent=tot.toLocaleString()+' mi';
   document.getElementById('b-drv').textContent='-$'+drv.toFixed(2);
+  document.getElementById('b-diesel').textContent='-$'+fuel.toFixed(2);
+  document.getElementById('b-mnt').textContent='-$'+mnt.toFixed(2);
   document.getElementById('b-dis').textContent='-$'+dis.toFixed(2);
   document.getElementById('b-fac').textContent='-$'+fac.toFixed(2);
-  document.getElementById('b-mnt').textContent='-$'+mnt.toFixed(2);
-  document.getElementById('b-net').textContent=(net>=0?'+$':'-$')+Math.abs(net).toFixed(2);
-  ['b-drv-pct','b-dis-pct','b-fac-pct','b-mnt-pct'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=[cfg.drv,cfg.disp,cfg.fact,cfg.mnt][i];});
-  const negBox=document.getElementById('neg-box');
+  document.getElementById('b-total-exp').textContent='$'+totalExp.toFixed(2);
+
+  const netEl=document.getElementById('b-net');
+  const mc=netRPM>=cfg.green?'g':netRPM>=cfg.yellow?'y':'r';
+  netEl.className='net-val '+mc;
+  netEl.textContent=(net>=0?'+$':'-$')+Math.abs(net).toFixed(2);
+
+  document.getElementById('rpm-gross').textContent='$'+grossRPM.toFixed(2);
+  const rpmNetEl=document.getElementById('rpm-net');
+  rpmNetEl.className='rpm-val '+mc;
+  rpmNetEl.textContent='$'+netRPM.toFixed(2);
+
+  let vclass,vlabel;
+  if(netRPM>=cfg.green){vclass='vb-green';vlabel='✓ TOMAR CARGA';}
+  else if(netRPM>=cfg.yellow){vclass='vb-yellow';vlabel='⚡ NEGOCIAR';}
+  else{vclass='vb-red';vlabel='✕ RECHAZAR';}
+  const vb=document.getElementById('verdict-badge');
+  vb.className='verdict-badge '+vclass;vb.textContent=vlabel;
+
   if(tot>0){
     const pct=(cfg.drv+cfg.disp+cfg.fact+cfg.mnt)/100;
-    const neededMin=Math.ceil(tot*cfg.yellow/(1-pct)+fuel/(1-pct));
-    const neededIdeal=Math.ceil(tot*cfg.green/(1-pct)+fuel/(1-pct));
-    document.getElementById('neg-min-rpm').textContent=cfg.yellow.toFixed(2);
-    document.getElementById('neg-ideal-rpm').textContent=cfg.green.toFixed(2);
+    const neededMin=Math.ceil((tot*cfg.yellow+fuel)/(1-pct));
+    const neededIdeal=Math.ceil((tot*cfg.green+fuel)/(1-pct));
+    document.getElementById('neg-min').textContent=cfg.yellow.toFixed(2);
+    document.getElementById('neg-ideal-lbl').textContent=cfg.green.toFixed(2);
     document.getElementById('neg-target').textContent='$'+neededMin.toLocaleString();
     document.getElementById('neg-ideal').textContent='$'+neededIdeal.toLocaleString();
-    negBox.style.display='block';
-  }else negBox.style.display='none';
+    document.getElementById('neg-hint').style.display='block';
+  }
 }
 
+function resetBreakdown(){
+  ['b-totmi','b-drv','b-diesel','b-mnt','b-dis','b-fac','b-total-exp'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.textContent='—';
+  });
+  document.getElementById('b-net').textContent='—';document.getElementById('b-net').className='net-val n';
+  document.getElementById('rpm-gross').textContent='$—';
+  document.getElementById('rpm-net').textContent='$—';document.getElementById('rpm-net').className='rpm-val n';
+  document.getElementById('verdict-badge').className='verdict-badge vb-neutral';document.getElementById('verdict-badge').textContent='Pendiente';
+  document.getElementById('neg-hint').style.display='none';
+}
+
+/* ── SAVE ── */
 function saveLoad(){
-  if(!currentLoad)return;
-  loads.unshift({...currentLoad,id:Date.now()});
-  save();updateCount();toast('Load guardado');
+  if(!currentCalc||currentCalc.pay===0){toast('Ingresa los datos del load primero');return;}
+  const load={
+    id:Date.now(),
+    pickup:currentCalc.pickup||'?',
+    delivery:currentCalc.delivery||'?',
+    broker:currentCalc.broker||'',
+    mc:currentCalc.mc||'',
+    pudate:currentCalc.pudate||'',
+    deldate:currentCalc.deldate||'',
+    miles:currentCalc.miles,
+    dh:currentCalc.dh,
+    tot:currentCalc.tot,
+    pay:currentCalc.pay,
+    fuel:currentCalc.fuel,
+    drv:currentCalc.drv,
+    dis:currentCalc.dis,
+    fac:currentCalc.fac,
+    mnt:currentCalc.mnt,
+    totalExp:currentCalc.totalExp,
+    net:currentCalc.net,
+    grossRPM:currentCalc.grossRPM,
+    netRPM:currentCalc.netRPM,
+    ppm:currentCalc.ppm,
+    date:currentCalc.date
+  };
+  loads.unshift(load);
+  saveStorage();
+  updateCount();
+  toast('Load guardado');
   const btn=document.getElementById('save-btn');
-  btn.textContent='Guardado ✓';
-  setTimeout(()=>{btn.textContent='Guardar Load';},2000);
+  btn.textContent='✓ Guardado';
+  setTimeout(()=>{btn.innerHTML='<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Accept & Save Load';},2500);
 }
 
 function clearAll(){
-  currentLoad=null;
+  ['f-pu','f-del','f-br','f-mc','f-pudate','f-deldate','f-mi','f-dh','f-pay'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
   document.getElementById('raw-text').value='';
-  clearResults();
-}
-
-function clearResults(){
-  document.getElementById('vcard').className='verdict-card vc-neutral';
-  const vb=document.getElementById('vbadge');vb.className='vbadge vb-neutral';vb.textContent='Pendiente';
-  ['kv-net','kv-rpm','kv-ppm'].forEach(id=>{const el=document.getElementById(id);el.textContent='—';el.className='kpi-v n';});
-  document.getElementById('breakdown').style.display='none';
-  document.getElementById('parsed-fields').style.display='none';
+  syncLocalFields();
+  currentCalc=null;
+  resetBreakdown();
 }
 
 function updateCount(){
-  const n=loads.length;
-  document.getElementById('sb-count').textContent=n+' load'+(n===1?'':'s');
+  document.getElementById('sb-count').textContent=loads.length+' load'+(loads.length===1?'':'s');
 }
 
+/* ── HISTORY ── */
 function renderHist(){
-  document.getElementById('st-total').textContent=loads.length;
   const list=document.getElementById('hist-list');
+  document.getElementById('st-total').textContent=loads.length;
   if(!loads.length){
     list.innerHTML='<div class="empty">Sin loads guardados aún.<br>Evalúa y guarda tu primer load.</div>';
     ['st-rpm','st-profit','st-miles'].forEach(id=>document.getElementById(id).textContent='—');
     return;
   }
-  const avgRpm=(loads.reduce((a,l)=>a+l.rpm,0)/loads.length).toFixed(2);
-  const totProfit=loads.reduce((a,l)=>a+l.net,0);
+  const avgRpm=(loads.reduce((a,l)=>a+(l.netRPM||0),0)/loads.length).toFixed(2);
+  const totProfit=loads.reduce((a,l)=>a+(l.net||0),0);
   const totMiles=loads.reduce((a,l)=>a+(l.tot||0),0);
   document.getElementById('st-rpm').textContent='$'+avgRpm;
   document.getElementById('st-profit').textContent='$'+Math.round(totProfit).toLocaleString();
   document.getElementById('st-miles').textContent=Math.round(totMiles).toLocaleString();
+
   list.innerHTML=loads.map(l=>{
-    const col=l.rpm>=cfg.green?'var(--green)':l.rpm>=cfg.yellow?'var(--yellow)':'var(--red)';
-    const dotcol=l.rpm>=cfg.green?'#00a882':l.rpm>=cfg.yellow?'#d4840a':'#d63a4a';
+    const rpm=l.netRPM||0;
+    const col=rpm>=cfg.green?'var(--green)':rpm>=cfg.yellow?'var(--yellow)':'var(--red)';
+    const tagcol=rpm>=cfg.green?'var(--green-bg)':rpm>=cfg.yellow?'var(--yellow-bg)':'var(--red-bg)';
+    const tagborder=rpm>=cfg.green?'var(--green-border)':rpm>=cfg.yellow?'var(--yellow-border)':'var(--red-border)';
+    const status=rpm>=cfg.green?'BUENA':rpm>=cfg.yellow?'NEGOCIAR':'RECHAZAR';
     return`<div class="hist-item" id="hi-${l.id}">
-      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:4px">
-        <div class="hi-route" style="flex:1">${l.pickup||'?'} → ${l.delivery||'?'}</div>
+      <div class="hi-top">
+        <div class="hi-route">${l.pickup} → ${l.delivery}</div>
+        <div class="hi-right">
+          <div class="hi-profit" style="color:${col}">${(l.net||0)>=0?'+$':'-$'}${Math.abs(l.net||0).toFixed(0)}</div>
+          <div class="hi-rpm">${rpm.toFixed(2)} Net RPM</div>
+        </div>
+      </div>
+      <div class="hi-meta">
+        ${l.pudate?`<span class="hi-tag">${l.pudate}</span>`:''}
+        ${l.broker?`<span class="hi-tag orange">${l.broker}</span>`:''}
+        ${l.mc?`<span class="hi-tag">MC# ${l.mc}</span>`:''}
+        <span class="hi-tag" style="background:${tagcol};border-color:${tagborder};color:${col}">${status}</span>
+        <span class="hi-tag">${l.tot||0} mi total</span>
+        ${l.miles?`<span class="hi-tag">${l.miles} mi loaded</span>`:''}
+      </div>
+      <div style="margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--text3);flex-wrap:wrap;gap:6px">
+        <span>Gross: <strong style="color:var(--text)">$${(l.pay||0).toFixed(0)}</strong></span>
+        <span>Diesel: <strong style="color:var(--red)">-$${(l.fuel||0).toFixed(0)}</strong></span>
+        <span>Driver: <strong style="color:var(--red)">-$${(l.drv||0).toFixed(0)}</strong></span>
+        <span>Global RPM: <strong style="color:var(--orange)">$${(l.grossRPM||0).toFixed(2)}</strong></span>
+      </div>
+      <div class="hi-bottom" style="margin-top:8px">
+        <div class="hi-date">${l.date}</div>
         <button class="del-btn" onclick="deleteLoad(${l.id})">Borrar</button>
-      </div>
-      <div class="hi-meta" style="margin-bottom:8px">
-        ${l.pudate?`<span>PU: ${l.pudate}</span>`:''}
-        ${l.broker?`<span>${l.broker}</span>`:''}
-        ${l.mc?`<span>MC# ${l.mc}</span>`:''}
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div class="hi-meta">
-          <span><span class="hi-dot" style="background:${dotcol}"></span>${l.tot||0} mi</span>
-          <span>${l.date}</span>
-        </div>
-        <div style="text-align:right">
-          <div class="hi-profit" style="color:${col}">${l.net>=0?'+$':'-$'}${Math.abs(l.net).toFixed(0)}</div>
-          <div class="hi-rpm">${l.rpm.toFixed(2)} RPM</div>
-        </div>
       </div>
     </div>`;
   }).join('');
 }
 
+/* ── BROKERS ── */
 function renderBrokers(){
   const map={};
   loads.forEach(l=>{
     const k=l.broker||'Sin broker';
-    if(!map[k])map[k]={name:k,mc:l.mc||'',count:0,rpmSum:0,profit:0};
-    map[k].count++;map[k].rpmSum+=l.rpm;map[k].profit+=l.net;
+    if(!map[k])map[k]={name:k,mc:l.mc||'',count:0,rpmSum:0,profit:0,miles:0};
+    map[k].count++;
+    map[k].rpmSum+=(l.netRPM||0);
+    map[k].profit+=(l.net||0);
+    map[k].miles+=(l.tot||0);
+    if(l.mc)map[k].mc=l.mc;
   });
   const sorted=Object.values(map).sort((a,b)=>(b.rpmSum/b.count)-(a.rpmSum/a.count));
   const el=document.getElementById('broker-list');
   if(!sorted.length){el.innerHTML='<div class="empty">Guarda loads para ver el ranking.</div>';return;}
-  el.innerHTML=sorted.map((b,i)=>`<div class="broker-item">
-    <div>
-      <div class="bi-name">${i===0?'🥇 ':''}${b.name}</div>
-      <div class="bi-loads">${b.mc?'MC# '+b.mc+' · ':''}${b.count} load${b.count>1?'s':''} · $${Math.round(b.profit).toLocaleString()} profit</div>
-    </div>
-    <div class="bi-rpm">$${(b.rpmSum/b.count).toFixed(2)}</div>
-  </div>`).join('');
+  el.innerHTML=sorted.map((b,i)=>{
+    const avgRpm=b.rpmSum/b.count;
+    const col=avgRpm>=cfg.green?'var(--green)':avgRpm>=cfg.yellow?'var(--yellow)':'var(--red)';
+    return`<div class="broker-card">
+      <div class="bc-left">
+        <div class="bc-name">${i===0?'🥇 ':'i'===1?'🥈 ':i===2?'🥉 ':''}${b.name}</div>
+        ${b.mc?`<div class="bc-mc">MC# ${b.mc}</div>`:''}
+        <div class="bc-stats">
+          <span class="bc-stat">${b.count} load${b.count>1?'s':''}</span>
+          <span class="bc-stat">Profit: <span>$${Math.round(b.profit).toLocaleString()}</span></span>
+          <span class="bc-stat">Miles: <span>${Math.round(b.miles).toLocaleString()}</span></span>
+        </div>
+      </div>
+      <div class="bc-rpm">
+        <div class="bc-rpm-val" style="color:${col}">$${avgRpm.toFixed(2)}</div>
+        <div class="bc-rpm-lbl">Avg Net RPM</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
+/* ── DELETE ── */
 function deleteLoad(id){
   loads=loads.filter(l=>l.id!==id);
-  save();updateCount();toast('Load borrado');renderHist();
+  saveStorage();updateCount();toast('Load borrado');renderHist();
 }
 
 function clearData(){
   if(confirm('¿Borrar todos los loads? Esta acción no se puede deshacer.')){
-    loads=[];save();updateCount();toast('Datos borrados');renderHist();
+    loads=[];saveStorage();updateCount();toast('Datos borrados');renderHist();
   }
 }
 
