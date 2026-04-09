@@ -18,11 +18,9 @@
   --green:#10d98a;--green-bg:#0a2a1a;--green-border:#10d98a40;
   --red:#ef4444;--red-bg:#2a0a0a;--red-border:#ef444440;
   --yellow:#f59e0b;--yellow-bg:#2a1a00;--yellow-border:#f59e0b40;
-  --accent:#f97316;
+  --blue:#3b82f6;--blue-bg:#0a1a2a;--blue-border:#3b82f640;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Display',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
-
-/* LAYOUT */
 .app{display:flex;height:100vh;height:-webkit-fill-available}
 
 /* SIDEBAR */
@@ -31,105 +29,127 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .sb-nav{display:flex;flex-direction:column;gap:4px;flex:1;align-items:center;padding-top:4px}
 .sn{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;border:none;background:none}
 .sn svg{width:20px;height:20px;stroke:var(--text3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}
-.sn.active{background:var(--orange)}
-.sn.active svg{stroke:#fff}
-.sn:not(.active):hover{background:var(--card2)}
-.sn:not(.active):hover svg{stroke:var(--text2)}
+.sn.active{background:var(--orange)}.sn.active svg{stroke:#fff}
+.sn:not(.active):hover{background:var(--card2)}.sn:not(.active):hover svg{stroke:var(--text2)}
 .sb-bottom{display:flex;flex-direction:column;gap:4px;align-items:center}
 .theme-sn{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border:none;font-size:18px}
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .topbar{padding:env(safe-area-inset-top,14px) 20px 12px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--bg)}
-.tb-left{}
 .tb-title{font-size:20px;font-weight:700;color:var(--text)}
 .tb-sub{font-size:12px;color:var(--text3);margin-top:2px}
 .tb-right{display:flex;gap:8px;align-items:center}
 .tb-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;border:0.5px solid var(--border2);background:none;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
 .tb-btn:hover{background:var(--card2);color:var(--text)}
 .tb-btn.danger{border-color:var(--red-border);color:var(--red)}
+.tb-btn.blue{border-color:var(--blue-border);color:var(--blue)}
 .tb-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-
 .body{flex:1;overflow:hidden;display:flex}
+.section{display:none;flex:1;overflow:hidden}.section.active{display:flex}
 
-/* SECTIONS */
-.section{display:none;flex:1;overflow:hidden}
-.section.active{display:flex}
-
-/* CALCULATOR SECTION */
-.calc-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:100%}
-@media(max-width:600px){.two-col{grid-template-columns:1fr}}
-
-.panel{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px}
-.panel-header{display:flex;align-items:center;gap:10px;padding-bottom:2px}
+/* CALC */
+.calc-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:12px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.two-col{grid-template-columns:1fr}}
+.panel{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.panel-header{display:flex;align-items:center;gap:10px}
 .panel-bar{width:3px;height:20px;background:var(--orange);border-radius:2px}
-.panel-bar.green{background:var(--green)}
+.panel-bar.green{background:var(--green)}.panel-bar.blue{background:var(--blue)}.panel-bar.yellow{background:var(--yellow)}
 .panel-title{font-size:16px;font-weight:700;color:var(--text)}
 
 /* FORM */
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.frow.single{grid-template-columns:1fr}
 .frow.triple{grid-template-columns:1fr 1fr 1fr}
-.field{}
 .field label{display:block;font-size:10px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px;font-weight:600}
 .field input{width:100%;background:var(--card2);border:0.5px solid var(--border2);border-radius:8px;color:var(--text);font-size:14px;padding:10px 12px;outline:none;transition:border .2s,background .2s;-webkit-appearance:none}
-.field input:focus{border-color:var(--orange);background:#1a1200}
-.field input.highlight{border-color:var(--orange);color:var(--orange);background:var(--orange-bg);font-weight:600}
-.field input.highlight-green{border-color:var(--green);color:var(--green);background:var(--green-bg);font-weight:600}
+.field input:focus{border-color:var(--orange)}
+.field input.hi-orange{border-color:var(--orange);color:var(--orange);background:var(--orange-bg);font-weight:600}
+.field input.hi-green{border-color:var(--green);color:var(--green);background:var(--green-bg);font-weight:600}
 .field input[type=date]{color:var(--text2)}
 
-textarea.paste-area{width:100%;background:var(--card2);border:0.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:13px;padding:12px;resize:none;font-family:inherit;line-height:1.6;outline:none;transition:border .2s;min-height:90px}
+/* UPLOAD ZONE */
+.upload-zone{border:1.5px dashed var(--border2);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--orange);background:var(--orange-bg)}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:24px;margin-bottom:6px}
+.upload-text{font-size:12px;color:var(--text3);line-height:1.5}
+.upload-text strong{color:var(--orange)}
+.upload-preview{background:var(--card2);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)}
+.upload-preview-icon{font-size:18px}
+
+textarea.paste-area{width:100%;background:var(--card2);border:0.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:13px;padding:12px;resize:none;font-family:inherit;line-height:1.6;outline:none;transition:border .2s;min-height:80px}
 textarea.paste-area:focus{border-color:var(--orange)}
 textarea.paste-area::placeholder{color:var(--text3)}
 
-.btn-parse{width:100%;background:var(--orange);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;letter-spacing:.2px}
-.btn-parse:active{opacity:.8}
-.btn-parse.loading{opacity:.5;pointer-events:none}
+.mode-toggle{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--card2);border-radius:8px;padding:3px;border:0.5px solid var(--border)}
+.mt-btn{padding:7px 4px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;text-align:center;color:var(--text3);border:none;background:none;transition:all .15s}
+.mt-btn.active{background:var(--orange);color:#fff}
+
+.btn-parse{width:100%;background:var(--orange);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn-parse:active{opacity:.8}.btn-parse.loading{opacity:.5;pointer-events:none}
+.ai-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--orange);margin-bottom:6px}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* BREAKDOWN */
-.bk-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.bk-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--border)}
 .bk-row:last-child{border:none}
-.bk-n{font-size:13px;color:var(--text2)}
-.bk-v{font-size:13px;font-weight:600;color:var(--text2)}
-.bk-v.exp{color:var(--red)}
-.bk-v.total{color:var(--text);font-size:14px}
-
-.net-row{display:flex;justify-content:space-between;align-items:center;padding-top:4px}
+.bk-n{font-size:13px;color:var(--text2)}.bk-v{font-size:13px;font-weight:600;color:var(--text2)}
+.bk-v.exp{color:var(--red)}.bk-v.total{color:var(--text);font-size:14px}
+.net-row{display:flex;justify-content:space-between;align-items:center}
 .net-label{font-size:18px;font-weight:700;color:var(--text)}
-.net-val{font-size:24px;font-weight:800}
+.net-val{font-size:26px;font-weight:800}
 .net-val.g{color:var(--green)}.net-val.y{color:var(--yellow)}.net-val.r{color:var(--red)}.net-val.n{color:var(--text3)}
-
 .rpm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.rpm-card{background:var(--card2);border-radius:10px;padding:14px;text-align:center}
-.rpm-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:6px}
+.rpm-card{background:var(--card2);border-radius:10px;padding:12px;text-align:center}
+.rpm-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:4px}
 .rpm-val{font-size:22px;font-weight:800}
 .rpm-val.orange{color:var(--orange)}.rpm-val.g{color:var(--green)}.rpm-val.y{color:var(--yellow)}.rpm-val.r{color:var(--red)}.rpm-val.n{color:var(--text3)}
-
 .verdict-badge{text-align:center;padding:10px;border-radius:10px;font-size:13px;font-weight:700;letter-spacing:.5px;border:1px solid}
 .vb-green{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
 .vb-yellow{background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-border)}
 .vb-red{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
 .vb-neutral{background:var(--card2);color:var(--text3);border-color:var(--border)}
-
 .btn-save{width:100%;background:var(--green);color:#fff;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-save:active{opacity:.8}
 .btn-save svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
-.neg-hint{background:var(--card2);border-radius:8px;padding:10px 12px}
-.neg-hint-title{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:6px}
-.neg-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:2px 0}
-.neg-row span:last-child{color:var(--text);font-weight:600}
+/* NEGOTIATION PANEL */
+.neg-panel{background:var(--card2);border-radius:12px;padding:14px}
+.neg-section-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:10px}
+.neg-target-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.neg-target-row:last-child{border:none}
+.neg-target-label{font-size:12px;color:var(--text2)}
+.neg-target-val{font-size:15px;font-weight:700}
+.neg-bar-wrap{margin-top:10px}
+.neg-bar-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:5px}
+.neg-bar-track{background:var(--border);border-radius:4px;height:8px;position:relative;overflow:hidden}
+.neg-bar-fill{height:100%;border-radius:4px;transition:width .4s}
+.neg-diff{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.neg-diff-card{background:var(--card);border-radius:8px;padding:10px;text-align:center;border:0.5px solid var(--border)}
+.neg-diff-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.neg-diff-val{font-size:16px;font-weight:700}
 
-/* HISTORY SECTION */
+/* MAP PANEL */
+.map-container{border-radius:10px;overflow:hidden;background:var(--card2);min-height:200px;position:relative;display:flex;align-items:center;justify-content:center}
+.map-placeholder{text-align:center;padding:30px;color:var(--text3)}
+.map-ph-icon{font-size:32px;margin-bottom:8px}
+.map-ph-text{font-size:12px;line-height:1.6}
+.map-link{display:block;width:100%;background:var(--blue-bg);border:0.5px solid var(--blue-border);color:var(--blue);border-radius:10px;padding:12px;font-size:13px;font-weight:600;cursor:pointer;text-align:center;text-decoration:none;transition:opacity .2s}
+.map-link:active{opacity:.7}
+.route-info{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.route-stat{background:var(--card2);border-radius:8px;padding:10px;text-align:center}
+.route-stat-val{font-size:15px;font-weight:700;color:var(--text)}
+.route-stat-lbl{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* HISTORY */
 .hist-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:12px}
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 @media(max-width:480px){.stats-row{grid-template-columns:repeat(2,1fr)}}
 .stat-card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:14px}
 .stat-val{font-size:22px;font-weight:700;color:var(--text);line-height:1;margin-bottom:3px}
 .stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
-
-.hist-list{}
 .hist-item{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px}
 .hi-top{display:flex;justify-content:space-between;align-items:start;margin-bottom:8px}
 .hi-route{font-size:14px;font-weight:700;color:var(--text);flex:1;margin-right:10px}
@@ -139,52 +159,36 @@ textarea.paste-area::placeholder{color:var(--text3)}
 .hi-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 .hi-tag{background:var(--card2);border:0.5px solid var(--border2);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--text2)}
 .hi-tag.orange{background:var(--orange-bg);border-color:var(--orange-border);color:var(--orange)}
-.hi-bottom{display:flex;justify-content:space-between;align-items:center}
+.hi-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
 .hi-date{font-size:11px;color:var(--text3)}
 .del-btn{background:var(--red-bg);border:0.5px solid var(--red-border);color:var(--red);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer}
 
-/* BROKERS SECTION */
+/* BROKERS */
 .brokers-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:10px}
 .broker-card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center}
-.bc-left{}
 .bc-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
 .bc-mc{font-size:11px;color:var(--text3)}
-.bc-stats{display:flex;gap:12px;margin-top:6px}
-.bc-stat{font-size:11px;color:var(--text2)}
-.bc-stat span{color:var(--text);font-weight:600}
-.bc-rpm{text-align:right}
-.bc-rpm-val{font-size:22px;font-weight:800;color:var(--green)}
-.bc-rpm-lbl{font-size:10px;color:var(--text3)}
+.bc-stats{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap}
+.bc-stat{font-size:11px;color:var(--text2)}.bc-stat span{color:var(--text);font-weight:600}
+.bc-rpm-val{font-size:22px;font-weight:800}.bc-rpm-lbl{font-size:10px;color:var(--text3)}
 
-/* SETTINGS SECTION */
+/* SETTINGS */
 .settings-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
 .settings-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px}
 .sdivider{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:14px;padding-bottom:8px;border-bottom:0.5px solid var(--border)}
-.sfield{margin-bottom:14px}
-.sfield:last-child{margin-bottom:0}
+.sfield{margin-bottom:14px}.sfield:last-child{margin-bottom:0}
 .sfield label{display:block;font-size:12px;color:var(--text2);font-weight:500;margin-bottom:7px}
 .sfield input{width:100%;background:var(--card2);border:0.5px solid var(--border2);border-radius:8px;color:var(--text);font-size:15px;padding:11px 13px;outline:none;-webkit-appearance:none;transition:border .2s}
 .sfield input:focus{border-color:var(--orange)}
 .btn-danger{width:100%;background:var(--red-bg);border:0.5px solid var(--red-border);color:var(--red);border-radius:10px;padding:13px;font-size:13px;font-weight:600;cursor:pointer}
 
 .empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:13px;line-height:1.9}
-
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:13px;font-weight:700;padding:10px 24px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
 .toast.show{opacity:1}
-
-.mode-toggle{display:grid;grid-template-columns:1fr 1fr;background:var(--card2);border-radius:8px;padding:3px;border:0.5px solid var(--border)}
-.mt-btn{padding:8px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;text-align:center;color:var(--text3);border:none;background:none;transition:all .15s}
-.mt-btn.active{background:var(--orange);color:#fff}
-
-.ai-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--orange);margin-bottom:8px}
-.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 </style>
 </head>
 <body>
 <div class="app">
-
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sb-logo">HS</div>
     <div class="sb-nav">
@@ -206,24 +210,17 @@ textarea.paste-area::placeholder{color:var(--text3)}
     </div>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
-    <!-- TOPBAR -->
     <div class="topbar">
-      <div class="tb-left">
+      <div>
         <div class="tb-title" id="tb-title">Load Calculator</div>
         <div class="tb-sub" id="tb-sub">Evalúa la rentabilidad de tu carga</div>
       </div>
       <div class="tb-right" id="tb-right">
         <button class="tb-btn danger" onclick="clearAll()">
-          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-          Clear
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Clear
         </button>
-        <button class="tb-btn" onclick="setMode('paste');document.getElementById('raw-text').focus()">
-          <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-          Paste Text
-        </button>
-        <div class="sb-count" id="sb-count" style="font-size:11px;color:var(--text3);background:var(--card);border:0.5px solid var(--border);padding:6px 12px;border-radius:20px">0 loads</div>
+        <div style="font-size:11px;color:var(--text3);background:var(--card);border:0.5px solid var(--border);padding:6px 12px;border-radius:20px" id="sb-count">0 loads</div>
       </div>
     </div>
 
@@ -234,35 +231,51 @@ textarea.paste-area::placeholder{color:var(--text3)}
         <div class="calc-body">
           <div class="two-col">
 
-            <!-- LEFT: LOAD DETAILS -->
-            <div class="panel">
-              <div class="panel-header">
-                <div class="panel-bar"></div>
-                <div class="panel-title">Load Details</div>
-              </div>
+            <!-- LEFT -->
+            <div style="display:flex;flex-direction:column;gap:12px">
 
-              <div class="mode-toggle">
-                <button class="mt-btn active" id="mt-paste" onclick="setMode('paste')">Paste Text</button>
-                <button class="mt-btn" id="mt-manual" onclick="setMode('manual')">Manual</button>
-              </div>
+              <!-- INPUT PANEL -->
+              <div class="panel">
+                <div class="panel-header"><div class="panel-bar"></div><div class="panel-title">Load Details</div></div>
+                <div class="mode-toggle">
+                  <button class="mt-btn active" id="mt-paste" onclick="setMode('paste')">Paste Text</button>
+                  <button class="mt-btn" id="mt-image" onclick="setMode('image')">Image / PDF</button>
+                  <button class="mt-btn" id="mt-manual" onclick="setMode('manual')">Manual</button>
+                </div>
 
-              <div id="pane-paste">
-                <div class="ai-badge"><div class="ai-dot"></div>AI Parser activo</div>
-                <textarea class="paste-area" id="raw-text" rows="5" placeholder="Pega el mensaje del load aquí:&#10;&#10;San Antonio, TX - Lewisville, TX&#10;PU: Tomorrow DEL: Saturday 8am&#10;8000 LBS miles: 297 DH: 00 $750&#10;MC#1647198 MAYBELL INDUSTRIES LLC"></textarea>
-                <button class="btn-parse" id="parse-btn" onclick="runAI()" style="margin-top:10px">Analizar con IA →</button>
-              </div>
+                <div id="pane-paste">
+                  <div class="ai-badge"><div class="ai-dot"></div>AI Parser activo</div>
+                  <textarea class="paste-area" id="raw-text" rows="4" placeholder="Pega el mensaje del load aquí:&#10;&#10;San Antonio, TX - Lewisville, TX&#10;PU: Tomorrow DEL: Saturday $750 miles: 297 DH: 00&#10;MC#1647198 MAYBELL INDUSTRIES LLC"></textarea>
+                  <button class="btn-parse" id="parse-btn" onclick="runAI()" style="margin-top:8px">Analizar con IA →</button>
+                </div>
 
-              <div id="pane-manual" style="display:none"></div>
+                <div id="pane-image" style="display:none">
+                  <div class="ai-badge"><div class="ai-dot"></div>Vision AI — lee imágenes y PDFs</div>
+                  <div class="upload-zone" id="upload-zone">
+                    <input type="file" id="file-input" accept="image/*,.pdf" onchange="handleFile(event)"/>
+                    <div class="upload-icon">📎</div>
+                    <div class="upload-text">Toca para subir o arrastra aquí<br><strong>JPG, PNG, PDF</strong> — foto del load, email, screenshot</div>
+                  </div>
+                  <div id="upload-preview" style="display:none" class="upload-preview">
+                    <span class="upload-preview-icon" id="prev-icon">🖼</span>
+                    <span id="prev-name" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+                    <button onclick="clearFile()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px">✕</button>
+                  </div>
+                  <button class="btn-parse" id="img-parse-btn" onclick="runVision()" style="margin-top:8px;display:none">Extraer datos con IA →</button>
+                </div>
 
-              <!-- FIELDS (shared, always visible) -->
-              <div id="fields-area">
+                <div id="pane-manual" style="display:none">
+                  <div class="ai-badge" style="color:var(--text3)">Entrada manual de datos</div>
+                </div>
+
+                <!-- FIELDS -->
                 <div class="frow">
                   <div class="field"><label>Broker Name</label><input id="f-br" placeholder="MAYBELL LLC" oninput="liveCalc()"/></div>
                   <div class="field"><label>MC Number</label><input id="f-mc" placeholder="1647198" oninput="liveCalc()"/></div>
                 </div>
                 <div class="frow">
-                  <div class="field"><label>Pick Up</label><input id="f-pu" placeholder="San Antonio, TX" oninput="liveCalc()"/></div>
-                  <div class="field"><label>Deliver</label><input id="f-del" placeholder="Lewisville, TX" oninput="liveCalc()"/></div>
+                  <div class="field"><label>Pick Up</label><input id="f-pu" placeholder="San Antonio, TX" oninput="onRouteChange()"/></div>
+                  <div class="field"><label>Deliver</label><input id="f-del" placeholder="Lewisville, TX" oninput="onRouteChange()"/></div>
                 </div>
                 <div class="frow">
                   <div class="field"><label>PU Date</label><input id="f-pudate" type="date" oninput="liveCalc()"/></div>
@@ -270,61 +283,94 @@ textarea.paste-area::placeholder{color:var(--text3)}
                 </div>
                 <div class="frow">
                   <div class="field"><label>Deadhead Miles</label><input id="f-dh" type="number" inputmode="decimal" placeholder="0" value="0" oninput="liveCalc()"/></div>
-                  <div class="field"><label>Loaded Miles</label><input id="f-mi" type="number" inputmode="decimal" placeholder="297" class="highlight" oninput="liveCalc()"/></div>
+                  <div class="field"><label>Loaded Miles</label><input id="f-mi" type="number" inputmode="decimal" placeholder="297" class="hi-orange" oninput="liveCalc()"/></div>
                 </div>
                 <div class="frow triple">
-                  <div class="field"><label>Gross Pay ($)</label><input id="f-pay" type="number" inputmode="decimal" placeholder="750" class="highlight-green" oninput="liveCalc()"/></div>
+                  <div class="field"><label>Gross Pay ($)</label><input id="f-pay" type="number" inputmode="decimal" placeholder="750" class="hi-green" oninput="liveCalc()"/></div>
                   <div class="field"><label>Diesel ($/gal)</label><input id="f-diesel-local" type="number" inputmode="decimal" placeholder="5.40" oninput="liveCalc()"/></div>
                   <div class="field"><label>Truck MPG</label><input id="f-mpg-local" type="number" inputmode="decimal" placeholder="6" oninput="liveCalc()"/></div>
                 </div>
               </div>
+
+              <!-- ROUTE MAP PANEL -->
+              <div class="panel">
+                <div class="panel-header"><div class="panel-bar blue"></div><div class="panel-title">Suggested Route</div></div>
+                <div class="route-info">
+                  <div class="route-stat"><div class="route-stat-val" id="rt-miles">—</div><div class="route-stat-lbl">Est. Miles</div></div>
+                  <div class="route-stat"><div class="route-stat-val" id="rt-time">—</div><div class="route-stat-lbl">Drive Time</div></div>
+                  <div class="route-stat"><div class="route-stat-val" id="rt-states">—</div><div class="route-stat-lbl">States</div></div>
+                </div>
+                <a id="map-link" class="map-link" href="#" target="_blank" style="pointer-events:none;opacity:.4">
+                  📍 Ver ruta en Apple Maps
+                </a>
+                <a id="gmap-link" class="map-link" href="#" target="_blank" style="pointer-events:none;opacity:.4;background:var(--card2);border-color:var(--border2);color:var(--text2);margin-top:6px">
+                  🗺 Ver ruta en Google Maps
+                </a>
+              </div>
             </div>
 
-            <!-- RIGHT: PROFITABILITY -->
-            <div class="panel">
-              <div class="panel-header">
-                <div class="panel-bar green"></div>
-                <div class="panel-title">Profitability Breakdown</div>
-              </div>
+            <!-- RIGHT -->
+            <div style="display:flex;flex-direction:column;gap:12px">
 
-              <div class="bk-row"><span class="bk-n">Total Miles:</span><span class="bk-v total" id="b-totmi">— mi</span></div>
-              <div class="bk-row"><span class="bk-n">Driver (<span id="b-drvpct">25</span>%):</span><span class="bk-v exp" id="b-drv">—</span></div>
-              <div class="bk-row"><span class="bk-n">Diesel (Estimated):</span><span class="bk-v exp" id="b-diesel">—</span></div>
-              <div class="bk-row"><span class="bk-n">Maintenance (<span id="b-mntpct">10</span>%):</span><span class="bk-v exp" id="b-mnt">—</span></div>
-              <div class="bk-row"><span class="bk-n">Dispatcher (<span id="b-dispct">5</span>%):</span><span class="bk-v exp" id="b-dis">—</span></div>
-              <div class="bk-row"><span class="bk-n">Factoring (<span id="b-facpct">2.5</span>%):</span><span class="bk-v exp" id="b-fac">—</span></div>
-              <div class="bk-row"><span class="bk-n">Total Expenses:</span><span class="bk-v total" id="b-total-exp">—</span></div>
-
-              <div class="net-row">
-                <div class="net-label">Net Profit:</div>
-                <div class="net-val n" id="b-net">—</div>
-              </div>
-
-              <div class="rpm-grid">
-                <div class="rpm-card">
-                  <div class="rpm-label">Global RPM</div>
-                  <div class="rpm-val orange" id="rpm-gross">$—</div>
+              <!-- PROFITABILITY -->
+              <div class="panel">
+                <div class="panel-header"><div class="panel-bar green"></div><div class="panel-title">Profitability Breakdown</div></div>
+                <div class="bk-row"><span class="bk-n">Total Miles:</span><span class="bk-v total" id="b-totmi">— mi</span></div>
+                <div class="bk-row"><span class="bk-n">Driver (<span id="b-drvpct">25</span>%):</span><span class="bk-v exp" id="b-drv">—</span></div>
+                <div class="bk-row"><span class="bk-n">Diesel:</span><span class="bk-v exp" id="b-diesel">—</span></div>
+                <div class="bk-row"><span class="bk-n">Maintenance (<span id="b-mntpct">10</span>%):</span><span class="bk-v exp" id="b-mnt">—</span></div>
+                <div class="bk-row"><span class="bk-n">Dispatcher (<span id="b-dispct">5</span>%):</span><span class="bk-v exp" id="b-dis">—</span></div>
+                <div class="bk-row"><span class="bk-n">Factoring (<span id="b-facpct">2.5</span>%):</span><span class="bk-v exp" id="b-fac">—</span></div>
+                <div class="bk-row"><span class="bk-n">Total Expenses:</span><span class="bk-v total" id="b-total-exp">—</span></div>
+                <div class="net-row"><div class="net-label">Net Profit:</div><div class="net-val n" id="b-net">—</div></div>
+                <div class="rpm-grid">
+                  <div class="rpm-card"><div class="rpm-label">Global RPM</div><div class="rpm-val orange" id="rpm-gross">$—</div></div>
+                  <div class="rpm-card"><div class="rpm-label">Net RPM</div><div class="rpm-val n" id="rpm-net">$—</div></div>
                 </div>
-                <div class="rpm-card">
-                  <div class="rpm-label">Net RPM</div>
-                  <div class="rpm-val n" id="rpm-net">$—</div>
+                <div class="verdict-badge vb-neutral" id="verdict-badge">Pendiente</div>
+                <button class="btn-save" id="save-btn" onclick="saveLoad()">
+                  <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  Accept &amp; Save Load
+                </button>
+              </div>
+
+              <!-- NEGOTIATION PANEL -->
+              <div class="panel" id="neg-panel" style="display:none">
+                <div class="panel-header"><div class="panel-bar yellow"></div><div class="panel-title">Negotiation Helper</div></div>
+                <div class="neg-panel">
+                  <div class="neg-section-title">Para alcanzar tu RPM objetivo necesitas pedir:</div>
+                  <div class="neg-target-row">
+                    <span class="neg-target-label">RPM mínimo ($<span id="neg-min-lbl">1.80</span>) →</span>
+                    <span class="neg-target-val" style="color:var(--yellow)" id="neg-min-val">—</span>
+                  </div>
+                  <div class="neg-target-row">
+                    <span class="neg-target-label">RPM ideal ($<span id="neg-ideal-lbl">2.50</span>) →</span>
+                    <span class="neg-target-val" style="color:var(--green)" id="neg-ideal-val">—</span>
+                  </div>
+                  <div class="neg-bar-wrap">
+                    <div class="neg-bar-label">
+                      <span>$0</span>
+                      <span id="neg-bar-current-lbl">Actual</span>
+                      <span id="neg-bar-max-lbl">Ideal</span>
+                    </div>
+                    <div class="neg-bar-track">
+                      <div class="neg-bar-fill" id="neg-bar" style="width:0%;background:var(--red)"></div>
+                    </div>
+                  </div>
+                  <div class="neg-diff">
+                    <div class="neg-diff-card">
+                      <div class="neg-diff-label">Falta para mínimo</div>
+                      <div class="neg-diff-val" style="color:var(--yellow)" id="neg-diff-min">—</div>
+                    </div>
+                    <div class="neg-diff-card">
+                      <div class="neg-diff-label">Falta para ideal</div>
+                      <div class="neg-diff-val" style="color:var(--green)" id="neg-diff-ideal">—</div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="verdict-badge vb-neutral" id="verdict-badge">Pendiente</div>
-
-              <div class="neg-hint" id="neg-hint" style="display:none">
-                <div class="neg-hint-title">Para llegar a tu RPM mínimo necesitas pedir:</div>
-                <div class="neg-row"><span>RPM mínimo ($<span id="neg-min">1.80</span>)</span><span id="neg-target">—</span></div>
-                <div class="neg-row"><span>RPM ideal ($<span id="neg-ideal-lbl">2.50</span>)</span><span id="neg-ideal">—</span></div>
-              </div>
-
-              <button class="btn-save" id="save-btn" onclick="saveLoad()">
-                <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                Accept &amp; Save Load
-              </button>
             </div>
-
           </div>
         </div>
       </div>
@@ -338,9 +384,7 @@ textarea.paste-area::placeholder{color:var(--text3)}
             <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="st-profit">—</div><div class="stat-lbl">Profit Total</div></div>
             <div class="stat-card"><div class="stat-val" id="st-miles">—</div><div class="stat-lbl">Millas</div></div>
           </div>
-          <div class="hist-list" id="hist-list">
-            <div class="empty">Sin loads guardados.<br>Evalúa y guarda tu primer load.</div>
-          </div>
+          <div id="hist-list"><div class="empty">Sin loads guardados aún.<br>Evalúa y guarda tu primer load.</div></div>
         </div>
       </div>
 
@@ -381,22 +425,17 @@ textarea.paste-area::placeholder{color:var(--text3)}
     </div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-let loads=[], currentCalc=null, isDark=true;
+let loads=[],currentCalc=null,isDark=true,uploadedFile=null,uploadedFileType=null;
 let cfg={mpg:6,diesel:5.40,green:2.50,yellow:1.80,drv:25,disp:5,fact:2.5,mnt:10};
 
-/* ── INIT ── */
 function init(){
   try{const s=localStorage.getItem('hs_loads');if(s){loads=JSON.parse(s);if(!Array.isArray(loads))loads=[];}}catch(e){loads=[];}
   try{const s=localStorage.getItem('hs_cfg');if(s)cfg=Object.assign({},cfg,JSON.parse(s));}catch(e){}
   try{isDark=localStorage.getItem('hs_theme')!=='light';applyTheme();}catch(e){}
-  applyCfg();
-  syncLocalFields();
-  updateCount();
-  liveCalc();
+  applyCfg();syncLocalFields();updateCount();liveCalc();
 }
 
 function applyTheme(){
@@ -423,6 +462,8 @@ function applyTheme(){
     document.documentElement.style.setProperty('--orange-bg','#fff3ec');
     document.documentElement.style.setProperty('--green-bg','#edfaf4');
     document.documentElement.style.setProperty('--red-bg','#fff0f0');
+    document.documentElement.style.setProperty('--blue-bg','#eef4ff');
+    document.documentElement.style.setProperty('--yellow-bg','#fffaec');
   }
   document.getElementById('theme-btn').textContent=isDark?'☀️':'🌙';
 }
@@ -444,8 +485,7 @@ function applyCfg(){
   const map={'cfg-mpg':cfg.mpg,'cfg-diesel':cfg.diesel,'cfg-green':cfg.green,'cfg-yellow':cfg.yellow,'cfg-drv':cfg.drv,'cfg-disp':cfg.disp,'cfg-fact':cfg.fact,'cfg-mnt':cfg.mnt};
   Object.keys(map).forEach(id=>{const el=document.getElementById(id);if(el)el.value=map[id];});
   ['b-drvpct','b-dispct','b-facpct','b-mntpct'].forEach((id,i)=>{
-    const el=document.getElementById(id);
-    if(el)el.textContent=[cfg.drv,cfg.disp,cfg.fact,cfg.mnt][i];
+    const el=document.getElementById(id);if(el)el.textContent=[cfg.drv,cfg.disp,cfg.fact,cfg.mnt][i];
   });
 }
 
@@ -458,9 +498,7 @@ function saveCfg(){
   cfg.disp=parseFloat(document.getElementById('cfg-disp').value)||5;
   cfg.fact=parseFloat(document.getElementById('cfg-fact').value)||2.5;
   cfg.mnt=parseFloat(document.getElementById('cfg-mnt').value)||10;
-  saveStorage();
-  applyCfg();
-  liveCalc();
+  saveStorage();applyCfg();liveCalc();
 }
 
 function saveStorage(){
@@ -468,14 +506,13 @@ function saveStorage(){
   try{localStorage.setItem('hs_cfg',JSON.stringify(cfg));}catch(e){}
 }
 
-/* ── NAVIGATION ── */
 function showSec(s){
   ['calc','hist','brokers','settings'].forEach(x=>{
     document.getElementById('sec-'+x).classList.toggle('active',x===s);
     document.getElementById('sn-'+x).classList.toggle('active',x===s);
   });
   const titles={calc:'Load Calculator',hist:'Load History',brokers:'Broker Ranking',settings:'Settings'};
-  const subs={calc:'Evalúa la rentabilidad de tu carga',hist:'Todas tus cargas guardadas',brokers:'Ranking de brokers por RPM',settings:'Configura tu operación'};
+  const subs={calc:'Evalúa la rentabilidad de tu carga',hist:'Todas tus cargas guardadas',brokers:'Ranking por RPM promedio',settings:'Configura tu operación'};
   document.getElementById('tb-title').textContent=titles[s];
   document.getElementById('tb-sub').textContent=subs[s];
   document.getElementById('tb-right').style.display=s==='calc'?'flex':'none';
@@ -483,21 +520,21 @@ function showSec(s){
   if(s==='brokers')renderBrokers();
 }
 
-/* ── MODE ── */
 function setMode(m){
-  document.getElementById('pane-paste').style.display=m==='paste'?'block':'none';
-  document.getElementById('mt-paste').classList.toggle('active',m==='paste');
-  document.getElementById('mt-manual').classList.toggle('active',m!=='paste');
+  ['paste','image','manual'].forEach(x=>{
+    document.getElementById('pane-'+x).style.display=x===m?'block':'none';
+    document.getElementById('mt-'+x).classList.toggle('active',x===m);
+  });
 }
 
-/* ── TOAST ── */
-function toast(msg){
+function toast(msg,type){
   const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2200);
+  t.textContent=msg;
+  t.style.background=type==='error'?'var(--red)':type==='warn'?'var(--yellow)':'var(--green)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 
-/* ── DATE PARSER ── */
 function parseDateStr(str){
   if(!str)return'';
   const today=new Date();const s=(str||'').toLowerCase();
@@ -510,21 +547,89 @@ function parseDateStr(str){
   return'';
 }
 
-/* ── AI PARSER ── */
+/* ── TEXT AI ── */
 async function runAI(){
   const text=document.getElementById('raw-text').value.trim();
-  if(!text){toast('Pega el texto del load primero');return;}
+  if(!text){toast('Pega el texto del load primero','warn');return;}
   const btn=document.getElementById('parse-btn');
   btn.textContent='Analizando...';btn.classList.add('loading');
-  const prompt=`Extract from this trucking load message and return ONLY valid JSON (no markdown) with: pickup, delivery, pickup_date (string like "Tomorrow morning" or "Saturday"), delivery_date (string), loaded_miles (number), deadhead_miles (number default 0), gross_pay (number), weight_lbs (number or null), broker_name (string or null), mc_number (string or null). Message: """${text}"""`;
+  const prompt=`Extract from this trucking load message and return ONLY valid JSON (no markdown) with: pickup, delivery, pickup_date (string like "Tomorrow morning"), delivery_date (string), loaded_miles (number), deadhead_miles (number default 0), gross_pay (number), weight_lbs (number or null), broker_name (string or null), mc_number (string or null). Message: """${text}"""`;
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
     const raw=data.content.map(c=>c.text||'').join('');
     const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
     fillFields(parsed);toast('Load analizado');
-  }catch(e){fallbackParse(text);toast('Parseado (modo básico)');}
+  }catch(e){fallbackParse(document.getElementById('raw-text').value);toast('Parseado (modo básico)','warn');}
   btn.textContent='Analizar con IA →';btn.classList.remove('loading');
+}
+
+/* ── IMAGE / PDF AI ── */
+function handleFile(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  uploadedFile=file;
+  uploadedFileType=file.type;
+  document.getElementById('upload-preview').style.display='flex';
+  document.getElementById('prev-name').textContent=file.name;
+  document.getElementById('prev-icon').textContent=file.type==='application/pdf'?'📄':'🖼';
+  document.getElementById('img-parse-btn').style.display='block';
+  document.getElementById('upload-zone').style.display='none';
+}
+
+function clearFile(){
+  uploadedFile=null;uploadedFileType=null;
+  document.getElementById('file-input').value='';
+  document.getElementById('upload-preview').style.display='none';
+  document.getElementById('img-parse-btn').style.display='none';
+  document.getElementById('upload-zone').style.display='block';
+}
+
+async function runVision(){
+  if(!uploadedFile){toast('Sube una imagen o PDF primero','warn');return;}
+  const btn=document.getElementById('img-parse-btn');
+  btn.textContent='Analizando archivo...';btn.classList.add('loading');
+
+  try{
+    const base64=await fileToBase64(uploadedFile);
+    const isPDF=uploadedFileType==='application/pdf';
+    const mediaType=isPDF?'application/pdf':uploadedFileType;
+
+    const contentBlock=isPDF
+      ?{type:'document',source:{type:'base64',media_type:mediaType,data:base64}}
+      :{type:'image',source:{type:'base64',media_type:mediaType,data:base64}};
+
+    const prompt=`This is a trucking load offer. Extract all visible data and return ONLY valid JSON (no markdown) with: pickup, delivery, pickup_date (string), delivery_date (string), loaded_miles (number), deadhead_miles (number default 0), gross_pay (number), weight_lbs (number or null), broker_name (string or null), mc_number (string or null).`;
+
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:700,
+        messages:[{role:'user',content:[contentBlock,{type:'text',text:prompt}]}]
+      })
+    });
+    const data=await res.json();
+    const raw=data.content.map(c=>c.text||'').join('');
+    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    fillFields(parsed);
+    toast('Archivo analizado');
+    clearFile();
+    setMode('paste');
+  }catch(err){
+    toast('Error al procesar el archivo','error');
+  }
+  btn.textContent='Extraer datos con IA →';btn.classList.remove('loading');
+}
+
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result.split(',')[1]);
+    reader.onerror=reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 function fillFields(p){
@@ -538,6 +643,7 @@ function fillFields(p){
   document.getElementById('f-pudate').value=parseDateStr(p.pickup_date||'');
   document.getElementById('f-deldate').value=parseDateStr(p.delivery_date||'');
   liveCalc();
+  onRouteChange();
 }
 
 function fallbackParse(text){
@@ -549,9 +655,50 @@ function fallbackParse(text){
   const pm=text.match(/\$\s*([\d,]+)/);if(pm)d.gross_pay=parseFloat(pm[1].replace(',',''));
   const bm=text.match(/([A-Z][A-Z\s]+(?:LLC|INC|CORP|INDUSTRIES|TRANSPORT|LOGISTICS|FREIGHT))/i);if(bm)d.broker_name=bm[1].trim();
   const mc=text.match(/mc#?\s*([\d]+)/i);if(mc)d.mc_number=mc[1];
-  const pu=text.match(/pu\s*:?\s*([^\n\r]+)/i);if(pu)d.pickup_date=pu[1].trim();
-  const del=text.match(/del\s*:?\s*([^\n\r]+)/i);if(del)d.delivery_date=del[1].trim();
+  const pu=text.match(/pu\s*:?\s*([^\n\r$]+)/i);if(pu)d.pickup_date=pu[1].trim();
+  const del=text.match(/del\s*:?\s*([^\n\r$]+)/i);if(del)d.delivery_date=del[1].trim();
   fillFields(d);
+}
+
+/* ── ROUTE MAP ── */
+function onRouteChange(){
+  const pu=document.getElementById('f-pu').value.trim();
+  const del=document.getElementById('f-del').value.trim();
+  const mapLink=document.getElementById('map-link');
+  const gmapLink=document.getElementById('gmap-link');
+  if(pu&&del){
+    const enc=encodeURIComponent;
+    mapLink.href=`maps://maps.apple.com/?saddr=${enc(pu)}&daddr=${enc(del)}&dirflg=d`;
+    mapLink.style.opacity='1';mapLink.style.pointerEvents='auto';
+    gmapLink.href=`https://www.google.com/maps/dir/${enc(pu)}/${enc(del)}`;
+    gmapLink.style.opacity='1';gmapLink.style.pointerEvents='auto';
+    const miles=parseFloat(document.getElementById('f-mi').value)||estimateMiles(pu,del);
+    if(miles){
+      document.getElementById('rt-miles').textContent=miles.toLocaleString()+' mi';
+      const hrs=miles/60;
+      const h=Math.floor(hrs);const m=Math.round((hrs-h)*60);
+      document.getElementById('rt-time').textContent=h+'h '+(m<10?'0':'')+m+'m';
+      document.getElementById('rt-states').textContent=estimateStates(miles);
+    }
+  }else{
+    mapLink.style.opacity='.4';mapLink.style.pointerEvents='none';mapLink.href='#';
+    gmapLink.style.opacity='.4';gmapLink.style.pointerEvents='none';gmapLink.href='#';
+    document.getElementById('rt-miles').textContent='—';
+    document.getElementById('rt-time').textContent='—';
+    document.getElementById('rt-states').textContent='—';
+  }
+  liveCalc();
+}
+
+function estimateMiles(from,to){
+  return parseFloat(document.getElementById('f-mi').value)||0;
+}
+
+function estimateStates(miles){
+  if(miles<200)return'1';
+  if(miles<500)return'1-2';
+  if(miles<900)return'2-3';
+  return'3+';
 }
 
 /* ── LIVE CALC ── */
@@ -594,8 +741,8 @@ function liveCalc(){
   document.getElementById('b-fac').textContent='-$'+fac.toFixed(2);
   document.getElementById('b-total-exp').textContent='$'+totalExp.toFixed(2);
 
-  const netEl=document.getElementById('b-net');
   const mc=netRPM>=cfg.green?'g':netRPM>=cfg.yellow?'y':'r';
+  const netEl=document.getElementById('b-net');
   netEl.className='net-val '+mc;
   netEl.textContent=(net>=0?'+$':'-$')+Math.abs(net).toFixed(2);
 
@@ -611,73 +758,68 @@ function liveCalc(){
   const vb=document.getElementById('verdict-badge');
   vb.className='verdict-badge '+vclass;vb.textContent=vlabel;
 
+  /* NEGOTIATION PANEL */
   if(tot>0){
+    document.getElementById('neg-panel').style.display='block';
     const pct=(cfg.drv+cfg.disp+cfg.fact+cfg.mnt)/100;
     const neededMin=Math.ceil((tot*cfg.yellow+fuel)/(1-pct));
     const neededIdeal=Math.ceil((tot*cfg.green+fuel)/(1-pct));
-    document.getElementById('neg-min').textContent=cfg.yellow.toFixed(2);
+    const diffMin=Math.max(0,neededMin-pay);
+    const diffIdeal=Math.max(0,neededIdeal-pay);
+
+    document.getElementById('neg-min-lbl').textContent=cfg.yellow.toFixed(2);
     document.getElementById('neg-ideal-lbl').textContent=cfg.green.toFixed(2);
-    document.getElementById('neg-target').textContent='$'+neededMin.toLocaleString();
-    document.getElementById('neg-ideal').textContent='$'+neededIdeal.toLocaleString();
-    document.getElementById('neg-hint').style.display='block';
+    document.getElementById('neg-min-val').textContent='$'+neededMin.toLocaleString();
+    document.getElementById('neg-ideal-val').textContent='$'+neededIdeal.toLocaleString();
+    document.getElementById('neg-diff-min').textContent=diffMin>0?'+$'+diffMin.toLocaleString():'OK';
+    document.getElementById('neg-diff-ideal').textContent=diffIdeal>0?'+$'+diffIdeal.toLocaleString():'OK';
+    document.getElementById('neg-bar-current-lbl').textContent='Actual $'+pay.toFixed(0);
+    document.getElementById('neg-bar-max-lbl').textContent='Ideal $'+neededIdeal.toFixed(0);
+
+    const barPct=neededIdeal>0?Math.min(100,(pay/neededIdeal)*100):0;
+    const barColor=barPct>=100?'var(--green)':barPct>=cfg.yellow/cfg.green*100?'var(--yellow)':'var(--red)';
+    document.getElementById('neg-bar').style.width=barPct+'%';
+    document.getElementById('neg-bar').style.background=barColor;
+  }else{
+    document.getElementById('neg-panel').style.display='none';
   }
 }
 
 function resetBreakdown(){
-  ['b-totmi','b-drv','b-diesel','b-mnt','b-dis','b-fac','b-total-exp'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.textContent='—';
-  });
+  ['b-totmi','b-drv','b-diesel','b-mnt','b-dis','b-fac','b-total-exp'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='—';});
   document.getElementById('b-net').textContent='—';document.getElementById('b-net').className='net-val n';
   document.getElementById('rpm-gross').textContent='$—';
   document.getElementById('rpm-net').textContent='$—';document.getElementById('rpm-net').className='rpm-val n';
   document.getElementById('verdict-badge').className='verdict-badge vb-neutral';document.getElementById('verdict-badge').textContent='Pendiente';
-  document.getElementById('neg-hint').style.display='none';
+  document.getElementById('neg-panel').style.display='none';
 }
 
 /* ── SAVE ── */
 function saveLoad(){
-  if(!currentCalc||currentCalc.pay===0){toast('Ingresa los datos del load primero');return;}
+  if(!currentCalc||currentCalc.pay===0){toast('Ingresa los datos del load primero','warn');return;}
   const load={
     id:Date.now(),
-    pickup:currentCalc.pickup||'?',
-    delivery:currentCalc.delivery||'?',
-    broker:currentCalc.broker||'',
-    mc:currentCalc.mc||'',
-    pudate:currentCalc.pudate||'',
-    deldate:currentCalc.deldate||'',
-    miles:currentCalc.miles,
-    dh:currentCalc.dh,
-    tot:currentCalc.tot,
-    pay:currentCalc.pay,
-    fuel:currentCalc.fuel,
-    drv:currentCalc.drv,
-    dis:currentCalc.dis,
-    fac:currentCalc.fac,
-    mnt:currentCalc.mnt,
-    totalExp:currentCalc.totalExp,
-    net:currentCalc.net,
-    grossRPM:currentCalc.grossRPM,
-    netRPM:currentCalc.netRPM,
-    ppm:currentCalc.ppm,
+    pickup:currentCalc.pickup||'?',delivery:currentCalc.delivery||'?',
+    broker:currentCalc.broker||'',mc:currentCalc.mc||'',
+    pudate:currentCalc.pudate||'',deldate:currentCalc.deldate||'',
+    miles:currentCalc.miles,dh:currentCalc.dh,tot:currentCalc.tot,
+    pay:currentCalc.pay,fuel:currentCalc.fuel,drv:currentCalc.drv,
+    dis:currentCalc.dis,fac:currentCalc.fac,mnt:currentCalc.mnt,
+    totalExp:currentCalc.totalExp,net:currentCalc.net,
+    grossRPM:currentCalc.grossRPM,netRPM:currentCalc.netRPM,ppm:currentCalc.ppm,
     date:currentCalc.date
   };
   loads.unshift(load);
-  saveStorage();
-  updateCount();
-  toast('Load guardado');
+  saveStorage();updateCount();toast('Load guardado');
   const btn=document.getElementById('save-btn');
   btn.textContent='✓ Guardado';
   setTimeout(()=>{btn.innerHTML='<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Accept & Save Load';},2500);
 }
 
 function clearAll(){
-  ['f-pu','f-del','f-br','f-mc','f-pudate','f-deldate','f-mi','f-dh','f-pay'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.value='';
-  });
+  ['f-pu','f-del','f-br','f-mc','f-pudate','f-deldate','f-mi','f-dh','f-pay'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('raw-text').value='';
-  syncLocalFields();
-  currentCalc=null;
-  resetBreakdown();
+  syncLocalFields();currentCalc=null;resetBreakdown();onRouteChange();
 }
 
 function updateCount(){
@@ -699,7 +841,6 @@ function renderHist(){
   document.getElementById('st-rpm').textContent='$'+avgRpm;
   document.getElementById('st-profit').textContent='$'+Math.round(totProfit).toLocaleString();
   document.getElementById('st-miles').textContent=Math.round(totMiles).toLocaleString();
-
   list.innerHTML=loads.map(l=>{
     const rpm=l.netRPM||0;
     const col=rpm>=cfg.green?'var(--green)':rpm>=cfg.yellow?'var(--yellow)':'var(--red)';
@@ -720,15 +861,14 @@ function renderHist(){
         ${l.mc?`<span class="hi-tag">MC# ${l.mc}</span>`:''}
         <span class="hi-tag" style="background:${tagcol};border-color:${tagborder};color:${col}">${status}</span>
         <span class="hi-tag">${l.tot||0} mi total</span>
-        ${l.miles?`<span class="hi-tag">${l.miles} mi loaded</span>`:''}
       </div>
-      <div style="margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--text3);flex-wrap:wrap;gap:6px">
+      <div style="padding-top:8px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--text3);flex-wrap:wrap;gap:6px">
         <span>Gross: <strong style="color:var(--text)">$${(l.pay||0).toFixed(0)}</strong></span>
         <span>Diesel: <strong style="color:var(--red)">-$${(l.fuel||0).toFixed(0)}</strong></span>
         <span>Driver: <strong style="color:var(--red)">-$${(l.drv||0).toFixed(0)}</strong></span>
         <span>Global RPM: <strong style="color:var(--orange)">$${(l.grossRPM||0).toFixed(2)}</strong></span>
       </div>
-      <div class="hi-bottom" style="margin-top:8px">
+      <div class="hi-bottom">
         <div class="hi-date">${l.date}</div>
         <button class="del-btn" onclick="deleteLoad(${l.id})">Borrar</button>
       </div>
@@ -742,10 +882,7 @@ function renderBrokers(){
   loads.forEach(l=>{
     const k=l.broker||'Sin broker';
     if(!map[k])map[k]={name:k,mc:l.mc||'',count:0,rpmSum:0,profit:0,miles:0};
-    map[k].count++;
-    map[k].rpmSum+=(l.netRPM||0);
-    map[k].profit+=(l.net||0);
-    map[k].miles+=(l.tot||0);
+    map[k].count++;map[k].rpmSum+=(l.netRPM||0);map[k].profit+=(l.net||0);map[k].miles+=(l.tot||0);
     if(l.mc)map[k].mc=l.mc;
   });
   const sorted=Object.values(map).sort((a,b)=>(b.rpmSum/b.count)-(a.rpmSum/a.count));
@@ -754,9 +891,10 @@ function renderBrokers(){
   el.innerHTML=sorted.map((b,i)=>{
     const avgRpm=b.rpmSum/b.count;
     const col=avgRpm>=cfg.green?'var(--green)':avgRpm>=cfg.yellow?'var(--yellow)':'var(--red)';
+    const medal=i===0?'🥇 ':i===1?'🥈 ':i===2?'🥉 ':'';
     return`<div class="broker-card">
-      <div class="bc-left">
-        <div class="bc-name">${i===0?'🥇 ':'i'===1?'🥈 ':i===2?'🥉 ':''}${b.name}</div>
+      <div>
+        <div class="bc-name">${medal}${b.name}</div>
         ${b.mc?`<div class="bc-mc">MC# ${b.mc}</div>`:''}
         <div class="bc-stats">
           <span class="bc-stat">${b.count} load${b.count>1?'s':''}</span>
@@ -764,7 +902,7 @@ function renderBrokers(){
           <span class="bc-stat">Miles: <span>${Math.round(b.miles).toLocaleString()}</span></span>
         </div>
       </div>
-      <div class="bc-rpm">
+      <div class="bc-rpm" style="text-align:right">
         <div class="bc-rpm-val" style="color:${col}">$${avgRpm.toFixed(2)}</div>
         <div class="bc-rpm-lbl">Avg Net RPM</div>
       </div>
@@ -772,7 +910,6 @@ function renderBrokers(){
   }).join('');
 }
 
-/* ── DELETE ── */
 function deleteLoad(id){
   loads=loads.filter(l=>l.id!==id);
   saveStorage();updateCount();toast('Load borrado');renderHist();
