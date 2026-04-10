@@ -571,7 +571,7 @@ function handleFile(e){
   uploadedFile=file;
   uploadedFileType=file.type;
   document.getElementById('upload-preview').style.display='flex';
-  document.getElementById('prev-name').textContent=file.name;
+  document.getElementById('prev-name').textContent=file.name+' ('+Math.round(file.size/1024)+'KB)';
   document.getElementById('prev-icon').textContent=file.type==='application/pdf'?'📄':'🖼';
   document.getElementById('img-parse-btn').style.display='block';
   document.getElementById('upload-zone').style.display='none';
@@ -585,42 +585,28 @@ function clearFile(){
   document.getElementById('upload-zone').style.display='block';
 }
 
-async function runVision(){
-  if(!uploadedFile){toast('Sube una imagen o PDF primero','warn');return;}
-  const btn=document.getElementById('img-parse-btn');
-  btn.textContent='Analizando archivo...';btn.classList.add('loading');
-
-  try{
-    const base64=await fileToBase64(uploadedFile);
-    const isPDF=uploadedFileType==='application/pdf';
-    const mediaType=isPDF?'application/pdf':uploadedFileType;
-
-    const contentBlock=isPDF
-      ?{type:'document',source:{type:'base64',media_type:mediaType,data:base64}}
-      :{type:'image',source:{type:'base64',media_type:mediaType,data:base64}};
-
-    const prompt=`This is a trucking load offer. Extract all visible data and return ONLY valid JSON (no markdown) with: pickup, delivery, pickup_date (string), delivery_date (string), loaded_miles (number), deadhead_miles (number default 0), gross_pay (number), weight_lbs (number or null), broker_name (string or null), mc_number (string or null).`;
-
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:700,
-        messages:[{role:'user',content:[contentBlock,{type:'text',text:prompt}]}]
-      })
-    });
-    const data=await res.json();
-    const raw=data.content.map(c=>c.text||'').join('');
-    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    fillFields(parsed);
-    toast('Archivo analizado');
-    clearFile();
-    setMode('paste');
-  }catch(err){
-    toast('Error al procesar el archivo','error');
-  }
-  btn.textContent='Extraer datos con IA →';btn.classList.remove('loading');
+/* Compress image to max 1MB before sending */
+function compressImage(file,maxW,quality){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=reject;
+    reader.onload=ev=>{
+      const img=new Image();
+      img.onerror=reject;
+      img.onload=()=>{
+        const canvas=document.createElement('canvas');
+        let w=img.width,h=img.height;
+        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+        canvas.width=w;canvas.height=h;
+        const ctx=canvas.getContext('2d');
+        ctx.drawImage(img,0,0,w,h);
+        const dataUrl=canvas.toDataURL('image/jpeg',quality);
+        resolve(dataUrl.split(',')[1]);
+      };
+      img.src=ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 function fileToBase64(file){
@@ -630,6 +616,76 @@ function fileToBase64(file){
     reader.onerror=reject;
     reader.readAsDataURL(file);
   });
+}
+
+async function runVision(){
+  if(!uploadedFile){toast('Sube una imagen o PDF primero','warn');return;}
+  const btn=document.getElementById('img-parse-btn');
+  btn.textContent='Procesando...';btn.classList.add('loading');
+
+  try{
+    const isPDF=uploadedFileType==='application/pdf'||uploadedFile.name.toLowerCase().endsWith('.pdf');
+    let base64,mediaType;
+
+    if(isPDF){
+      base64=await fileToBase64(uploadedFile);
+      mediaType='application/pdf';
+    }else{
+      /* Compress image: max 1200px wide, 0.82 quality */
+      btn.textContent='Comprimiendo imagen...';
+      base64=await compressImage(uploadedFile,1200,0.82);
+      mediaType='image/jpeg';
+    }
+
+    btn.textContent='Analizando con IA...';
+
+    const contentBlock=isPDF
+      ?{type:'document',source:{type:'base64',media_type:mediaType,data:base64}}
+      :{type:'image',source:{type:'base64',media_type:mediaType,data:base64}};
+
+    const prompt=`This is a trucking/freight load offer document or screenshot. Look carefully at ALL text visible and extract: pickup city+state, delivery city+state, pickup date, delivery date, loaded miles, deadhead miles (default 0), gross pay in dollars, weight in lbs, broker company name, MC number. Return ONLY valid JSON with keys: pickup, delivery, pickup_date, delivery_date, loaded_miles, deadhead_miles, gross_pay, weight_lbs, broker_name, mc_number. Use null for any field not found.`;
+
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:800,
+        messages:[{role:'user',content:[contentBlock,{type:'text',text:prompt}]}]
+      })
+    });
+
+    if(!res.ok){
+      const errText=await res.text();
+      throw new Error('API error '+res.status+': '+errText.slice(0,200));
+    }
+
+    const data=await res.json();
+
+    /* Check for API-level error */
+    if(data.error){throw new Error(data.error.message||'API error');}
+
+    const raw=data.content.map(c=>c.text||'').join('').trim();
+
+    /* Try to find JSON even if wrapped in text */
+    let parsed;
+    const jsonMatch=raw.match(/\{[\s\S]*\}/);
+    if(jsonMatch){
+      parsed=JSON.parse(jsonMatch[0]);
+    }else{
+      throw new Error('No JSON in response: '+raw.slice(0,100));
+    }
+
+    fillFields(parsed);
+    toast('✓ Imagen analizada');
+    clearFile();
+
+  }catch(err){
+    console.error('Vision error:',err);
+    toast('Error: '+err.message.slice(0,60),'error');
+  }
+
+  btn.textContent='Extraer datos con IA →';btn.classList.remove('loading');
 }
 
 function fillFields(p){
@@ -660,26 +716,172 @@ function fallbackParse(text){
   fillFields(d);
 }
 
-/* ── ROUTE MAP ── */
+/* ── CITY COORDINATES (major US cities) ── */
+const CITY_COORDS={
+  'new york':      [40.71,-74.01], 'nyc':           [40.71,-74.01],
+  'los angeles':   [34.05,-118.24],'la':             [34.05,-118.24],
+  'chicago':       [41.88,-87.63], 'houston':        [29.76,-95.37],
+  'phoenix':       [33.45,-112.07],'philadelphia':   [39.95,-75.17],
+  'san antonio':   [29.42,-98.49], 'san diego':      [32.72,-117.16],
+  'dallas':        [32.78,-96.80], 'san jose':       [37.34,-121.89],
+  'austin':        [30.27,-97.74], 'jacksonville':   [30.33,-81.66],
+  'fort worth':    [32.75,-97.33], 'columbus':       [39.96,-82.99],
+  'charlotte':     [35.23,-80.84], 'indianapolis':   [39.77,-86.16],
+  'san francisco': [37.77,-122.42],'seattle':        [47.61,-122.33],
+  'denver':        [39.74,-104.98],'nashville':      [36.17,-86.78],
+  'oklahoma city': [35.47,-97.52], 'el paso':        [31.76,-106.49],
+  'washington':    [38.90,-77.04], 'dc':             [38.90,-77.04],
+  'memphis':       [35.15,-90.05], 'louisville':     [38.25,-85.76],
+  'portland':      [45.52,-122.68],'baltimore':      [39.29,-76.61],
+  'milwaukee':     [43.04,-87.91], 'albuquerque':    [35.08,-106.65],
+  'tucson':        [32.22,-110.97],'fresno':         [36.74,-119.77],
+  'sacramento':    [38.58,-121.49],'mesa':           [33.42,-111.83],
+  'kansas city':   [39.10,-94.58], 'atlanta':        [33.75,-84.39],
+  'omaha':         [41.26,-95.94], 'colorado springs':[38.83,-104.82],
+  'raleigh':       [35.78,-78.64], 'long beach':     [33.77,-118.19],
+  'virginia beach':[36.85,-75.98], 'minneapolis':    [44.98,-93.27],
+  'tampa':         [27.95,-82.46], 'new orleans':    [29.95,-90.07],
+  'las vegas':     [36.17,-115.14],'cleveland':      [41.50,-81.69],
+  'aurora':        [39.73,-104.83],'anaheim':        [33.84,-117.91],
+  'corpus christi':[27.80,-97.40], 'st louis':       [38.63,-90.20],
+  'pittsburgh':    [40.44,-79.99], 'lexington':      [38.04,-84.46],
+  'stockton':      [37.96,-121.29],'cincinnati':     [39.10,-84.51],
+  'st paul':       [44.95,-93.09], 'toledo':         [41.66,-83.56],
+  'greensboro':    [36.07,-79.79], 'newark':         [40.74,-74.17],
+  'plano':         [33.02,-96.70], 'henderson':      [36.04,-114.98],
+  'lincoln':       [40.81,-96.68], 'buffalo':        [42.89,-78.88],
+  'fort wayne':    [41.08,-85.14], 'jersey city':    [40.72,-74.04],
+  'chula vista':   [32.64,-117.08],'orlando':        [28.54,-81.38],
+  'st petersburg': [27.77,-82.64], 'norfolk':        [36.85,-76.29],
+  'chandler':      [33.31,-111.84],'laredo':         [27.51,-99.51],
+  'madison':       [43.07,-89.40], 'durham':         [35.99,-78.90],
+  'lubbock':       [33.58,-101.86],'winston-salem':  [36.10,-80.24],
+  'garland':       [32.91,-96.64], 'glendale':       [33.54,-112.19],
+  'hialeah':       [25.86,-80.28], 'reno':           [39.53,-119.81],
+  'baton rouge':   [30.45,-91.13], 'irvine':         [33.68,-117.77],
+  'chesapeake':    [36.77,-76.29], 'scottsdale':     [33.49,-111.93],
+  'north las vegas':[36.20,-115.12],'fremont':       [37.55,-121.99],
+  'gilbert':       [33.35,-111.79],'san bernardino': [34.11,-117.29],
+  'boise':         [43.62,-116.20],'birmingham':     [33.52,-86.80],
+  'rochester':     [43.16,-77.61], 'richmond':       [37.54,-77.44],
+  'spokane':       [47.66,-117.43],'des moines':     [41.59,-93.62],
+  'montgomery':    [32.37,-86.30], 'modesto':        [37.64,-120.99],
+  'fayetteville':  [36.08,-94.16], 'tacoma':         [47.25,-122.44],
+  'shreveport':    [32.53,-93.75], 'akron':          [41.08,-81.52],
+  'aurora co':     [39.73,-104.83],'little rock':    [34.75,-92.29],
+  'oxnard':        [34.20,-119.18],'tempe':          [33.43,-111.94],
+  'huntington beach':[33.66,-117.99],'grand rapids': [42.96,-85.67],
+  'mobile':        [30.69,-88.04], 'knoxville':      [35.96,-83.92],
+  'worcester':     [42.26,-71.80], 'chattanooga':    [35.04,-85.31],
+  'fort lauderdale':[26.12,-80.14],'providence':     [41.82,-71.42],
+  'rancho cucamonga':[34.11,-117.59],'santa ana':    [33.75,-117.87],
+  'overland park': [38.90,-94.67], 'garden grove':  [33.77,-117.94],
+  'oceanside':     [33.20,-117.38],'brownsville':    [25.93,-97.49],
+  'elk grove':     [38.41,-121.37],'clarksville':    [36.53,-87.36],
+  'ontario':       [34.06,-117.65],'salt lake city': [40.76,-111.89],
+  'huntsville':    [34.73,-86.59], 'worcester ma':   [42.26,-71.80],
+  'lewisville':    [33.05,-96.99], 'grapevine':      [32.93,-97.08],
+  'irving':        [32.81,-96.95], 'mcallen':        [26.20,-98.23],
+  'mesquite':      [32.77,-96.60], 'waco':           [31.55,-97.15],
+  'miami':         [25.78,-80.21], 'pigeon mi':      [43.83,-83.27],
+  'pigeon':        [43.83,-83.27], 'detroit':        [42.33,-83.05],
+  'flint':         [43.01,-83.69], 'lansing':        [42.73,-84.55],
+  'ann arbor':     [42.28,-83.74], 'grand island':   [40.92,-98.34],
+  'sioux falls':   [43.54,-96.73], 'fargo':          [46.88,-96.79],
+  'billings':      [45.78,-108.50],'missoula':       [46.87,-114.02],
+  'anchorage':     [61.22,-149.90],'honolulu':       [21.31,-157.86],
+};
+
+function getCityCoords(cityState){
+  if(!cityState)return null;
+  const lower=cityState.toLowerCase().replace(/,.*$/,'').trim();
+  if(CITY_COORDS[lower])return CITY_COORDS[lower];
+  for(const key of Object.keys(CITY_COORDS)){
+    if(lower.includes(key)||key.includes(lower))return CITY_COORDS[key];
+  }
+  return null;
+}
+
+function haversine(lat1,lon1,lat2,lon2){
+  const R=3958.8;
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function calcDrivingMiles(from,to){
+  const c1=getCityCoords(from);
+  const c2=getCityCoords(to);
+  if(!c1||!c2)return 0;
+  /* Driving is ~20% more than straight line */
+  return Math.round(haversine(c1[0],c1[1],c2[0],c2[1])*1.20);
+}
+
+function getStateFromCity(cityState){
+  if(!cityState)return'';
+  const m=cityState.match(/,\s*([A-Z]{2})/);
+  return m?m[1]:'';
+}
+
+function countStates(from,to){
+  const s1=getStateFromCity(from);
+  const s2=getStateFromCity(to);
+  if(!s1||!s2)return'—';
+  if(s1===s2)return'1 state';
+  const c1=getCityCoords(from);
+  const c2=getCityCoords(to);
+  if(!c1||!c2)return'2 states';
+  const dist=haversine(c1[0],c1[1],c2[0],c2[1]);
+  if(dist<300)return'2 states';
+  if(dist<600)return'2-3 states';
+  return'3+ states';
+}
+
+let routeCalcTimer=null;
+
 function onRouteChange(){
   const pu=document.getElementById('f-pu').value.trim();
   const del=document.getElementById('f-del').value.trim();
   const mapLink=document.getElementById('map-link');
   const gmapLink=document.getElementById('gmap-link');
+
   if(pu&&del){
     const enc=encodeURIComponent;
     mapLink.href=`maps://maps.apple.com/?saddr=${enc(pu)}&daddr=${enc(del)}&dirflg=d`;
     mapLink.style.opacity='1';mapLink.style.pointerEvents='auto';
     gmapLink.href=`https://www.google.com/maps/dir/${enc(pu)}/${enc(del)}`;
     gmapLink.style.opacity='1';gmapLink.style.pointerEvents='auto';
-    const miles=parseFloat(document.getElementById('f-mi').value)||estimateMiles(pu,del);
-    if(miles){
-      document.getElementById('rt-miles').textContent=miles.toLocaleString()+' mi';
-      const hrs=miles/60;
-      const h=Math.floor(hrs);const m=Math.round((hrs-h)*60);
-      document.getElementById('rt-time').textContent=h+'h '+(m<10?'0':'')+m+'m';
-      document.getElementById('rt-states').textContent=estimateStates(miles);
-    }
+
+    /* Debounce route calc by 600ms */
+    clearTimeout(routeCalcTimer);
+    routeCalcTimer=setTimeout(()=>{
+      const manualMiles=parseFloat(document.getElementById('f-mi').value)||0;
+      const estMiles=calcDrivingMiles(pu,del);
+      const displayMiles=manualMiles||estMiles;
+
+      if(displayMiles>0){
+        document.getElementById('rt-miles').textContent=displayMiles.toLocaleString()+' mi';
+        /* Avg trucking speed ~55mph */
+        const hrs=displayMiles/55;
+        const h=Math.floor(hrs);
+        const m=Math.round((hrs-h)*60);
+        document.getElementById('rt-time').textContent=h+'h '+(m<10?'0':'')+m+'m';
+        document.getElementById('rt-states').textContent=countStates(pu,del);
+
+        /* Auto-fill loaded miles if empty */
+        const miField=document.getElementById('f-mi');
+        if(!miField.value&&estMiles>0){
+          miField.value=estMiles;
+          liveCalc();
+        }
+      }else{
+        document.getElementById('rt-miles').textContent='Sin datos';
+        document.getElementById('rt-time').textContent='—';
+        document.getElementById('rt-states').textContent='—';
+      }
+    },600);
+
   }else{
     mapLink.style.opacity='.4';mapLink.style.pointerEvents='none';mapLink.href='#';
     gmapLink.style.opacity='.4';gmapLink.style.pointerEvents='none';gmapLink.href='#';
@@ -688,17 +890,6 @@ function onRouteChange(){
     document.getElementById('rt-states').textContent='—';
   }
   liveCalc();
-}
-
-function estimateMiles(from,to){
-  return parseFloat(document.getElementById('f-mi').value)||0;
-}
-
-function estimateStates(miles){
-  if(miles<200)return'1';
-  if(miles<500)return'1-2';
-  if(miles<900)return'2-3';
-  return'3+';
 }
 
 /* ── LIVE CALC ── */
