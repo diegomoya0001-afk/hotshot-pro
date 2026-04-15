@@ -20,6 +20,7 @@
   --yellow:#f59e0b;--yellow-bg:#2a1a00;--yellow-border:#f59e0b40;
   --blue:#3b82f6;--blue-bg:#0a1a2a;--blue-border:#3b82f640;
 }
+.empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:13px;line-height:1.9}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Display',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
 .app{display:flex;height:100vh;height:-webkit-fill-available}
 
@@ -182,9 +183,56 @@ textarea.paste-area::placeholder{color:var(--text3)}
 .sfield input:focus{border-color:var(--orange)}
 .btn-danger{width:100%;background:var(--red-bg);border:0.5px solid var(--red-border);color:var(--red);border-radius:10px;padding:13px;font-size:13px;font-weight:600;cursor:pointer}
 
-.empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:13px;line-height:1.9}
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:13px;font-weight:700;padding:10px 24px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
-.toast.show{opacity:1}
+/* DASHBOARD */
+.dash-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:14px}
+.dash-top-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:500px){.dash-top-cards{grid-template-columns:1fr}}
+.dash-kpi{background:var(--card2);border-radius:14px;padding:16px;position:relative;overflow:hidden;border:0.5px solid var(--border)}
+.dash-kpi-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.dash-kpi-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dash-kpi-label{font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.dash-kpi-val{font-size:22px;font-weight:800;color:var(--text);line-height:1}
+.dash-kpi-sub{font-size:10px;color:var(--text3);margin-top:4px}
+.dash-kpi-arrow{position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.dash-kpi-arrow svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+.dash-mid{display:grid;grid-template-columns:1fr 340px;gap:12px}
+@media(max-width:800px){.dash-mid{grid-template-columns:1fr}}
+
+.dash-chart-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:18px}
+.dash-chart-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:4px}
+.dash-chart-title{font-size:15px;font-weight:700;color:var(--text)}
+.dash-chart-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.dash-chart-legend{display:flex;gap:12px;margin-bottom:14px}
+.dash-legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
+.dash-legend-label{font-size:11px;color:var(--text2)}
+.chart-wrap{position:relative;width:100%;height:180px}
+
+.dash-right-col{display:flex;flex-direction:column;gap:12px}
+.dash-info-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:16px}
+.dash-info-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px}
+.dash-recent-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.dash-recent-item:last-child{border:none;padding-bottom:0}
+.dash-recent-avatar{width:34px;height:34px;border-radius:10px;background:var(--orange-bg);border:0.5px solid var(--orange-border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--orange);flex-shrink:0;text-transform:uppercase}
+.dash-recent-route{font-size:12px;font-weight:600;color:var(--text);line-height:1.2}
+.dash-recent-meta{font-size:10px;color:var(--text3);margin-top:2px}
+.dash-recent-profit{text-align:right;flex-shrink:0}
+.dash-recent-val{font-size:13px;font-weight:700}
+.dash-recent-rpm{font-size:10px;color:var(--text3)}
+
+.dash-expense-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dash-exp-item{background:var(--card2);border-radius:10px;padding:12px}
+.dash-exp-bar-wrap{height:4px;background:var(--border);border-radius:2px;margin:6px 0 4px;overflow:hidden}
+.dash-exp-bar{height:100%;border-radius:2px;transition:width .6s}
+.dash-exp-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px}
+.dash-exp-val{font-size:14px;font-weight:700;color:var(--text);margin-top:2px}
+.dash-exp-pct{font-size:10px;color:var(--text3)}
+
+.dash-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:600px){.dash-stat-row{grid-template-columns:repeat(2,1fr)}}
+.dash-mini-stat{background:var(--card2);border-radius:10px;padding:12px;text-align:center}
+.dash-mini-val{font-size:18px;font-weight:700;line-height:1;margin-bottom:3px}
+.dash-mini-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px}
 </style>
 </head>
 <body>
@@ -192,6 +240,9 @@ textarea.paste-area::placeholder{color:var(--text3)}
   <div class="sidebar">
     <div class="sb-logo">HS</div>
     <div class="sb-nav">
+      <button class="sn" id="sn-dash" onclick="showSec('dash')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </button>
       <button class="sn active" id="sn-calc" onclick="showSec('calc')">
         <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       </button>
@@ -225,6 +276,149 @@ textarea.paste-area::placeholder{color:var(--text3)}
     </div>
 
     <div class="body">
+
+      <!-- DASHBOARD -->
+      <div class="section" id="sec-dash">
+        <div class="dash-body">
+
+          <!-- TOP KPI CARDS -->
+          <div class="dash-top-cards">
+            <div class="dash-kpi">
+              <div class="dash-kpi-icon" style="background:var(--orange)">
+                <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div class="dash-kpi-arrow" style="background:var(--green-bg);color:var(--green)">
+                <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+              </div>
+              <div class="dash-kpi-label">Total Balance</div>
+              <div class="dash-kpi-val" id="dk-balance">$0.00</div>
+              <div class="dash-kpi-sub" id="dk-balance-sub">Net profit acumulado</div>
+            </div>
+            <div class="dash-kpi">
+              <div class="dash-kpi-icon" style="background:var(--green)">
+                <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </div>
+              <div class="dash-kpi-arrow" style="background:var(--green-bg);color:var(--green)">
+                <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+              </div>
+              <div class="dash-kpi-label">Earnings</div>
+              <div class="dash-kpi-val" id="dk-earnings">$0.00</div>
+              <div class="dash-kpi-sub" id="dk-earnings-sub">Gross pay total</div>
+            </div>
+            <div class="dash-kpi">
+              <div class="dash-kpi-icon" style="background:var(--red)">
+                <svg viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+              </div>
+              <div class="dash-kpi-arrow" style="background:var(--red-bg);color:var(--red)">
+                <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="dash-kpi-label">Expenses</div>
+              <div class="dash-kpi-val" id="dk-expenses">$0.00</div>
+              <div class="dash-kpi-sub" id="dk-expenses-sub">Gastos totales</div>
+            </div>
+          </div>
+
+          <!-- EXTRA STATS ROW -->
+          <div class="dash-stat-row">
+            <div class="dash-mini-stat">
+              <div class="dash-mini-val" style="color:var(--orange)" id="dk-rpm">$0.00</div>
+              <div class="dash-mini-lbl">Avg Net RPM</div>
+            </div>
+            <div class="dash-mini-stat">
+              <div class="dash-mini-val" style="color:var(--text)" id="dk-loads">0</div>
+              <div class="dash-mini-lbl">Total Loads</div>
+            </div>
+            <div class="dash-mini-stat">
+              <div class="dash-mini-val" style="color:var(--text)" id="dk-miles">0</div>
+              <div class="dash-mini-lbl">Total Miles</div>
+            </div>
+            <div class="dash-mini-stat">
+              <div class="dash-mini-val" style="color:var(--green)" id="dk-margin">0%</div>
+              <div class="dash-mini-lbl">Profit Margin</div>
+            </div>
+          </div>
+
+          <!-- CHART + RECENT -->
+          <div class="dash-mid">
+
+            <!-- CHART -->
+            <div class="dash-chart-card">
+              <div class="dash-chart-header">
+                <div>
+                  <div class="dash-chart-title">Gross Pay vs Net Profit</div>
+                  <div class="dash-chart-sub">Últimas cargas guardadas</div>
+                </div>
+              </div>
+              <div class="dash-chart-legend">
+                <span><span class="dash-legend-dot" style="background:var(--orange)"></span><span class="dash-legend-label">Gross Pay</span></span>
+                <span><span class="dash-legend-dot" style="background:var(--green)"></span><span class="dash-legend-label">Net Profit</span></span>
+                <span><span class="dash-legend-dot" style="background:var(--red)"></span><span class="dash-legend-label">Expenses</span></span>
+              </div>
+              <div class="chart-wrap">
+                <canvas id="dash-chart"></canvas>
+              </div>
+            </div>
+
+            <!-- RIGHT COL -->
+            <div class="dash-right-col">
+
+              <!-- RECENT LOADS -->
+              <div class="dash-info-card">
+                <div class="dash-info-title">Recent Evaluated Loads</div>
+                <div id="dash-recent-list"><div style="font-size:12px;color:var(--text3);padding:10px 0">Sin loads guardados aún.</div></div>
+                <div style="margin-top:10px;padding-top:10px;border-top:0.5px solid var(--border)">
+                  <span onclick="showSec('calc')" style="font-size:12px;color:var(--orange);cursor:pointer;font-weight:600">Evaluate new Load →</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- EXPENSE BREAKDOWN -->
+          <div class="dash-chart-card">
+            <div class="dash-info-title" style="margin-bottom:14px">Expense Breakdown</div>
+            <div class="dash-expense-grid">
+              <div class="dash-exp-item">
+                <div class="dash-exp-label">Driver Pay</div>
+                <div class="dash-exp-val" id="dk-exp-drv">$0</div>
+                <div class="dash-exp-bar-wrap"><div class="dash-exp-bar" id="dk-bar-drv" style="width:0%;background:var(--orange)"></div></div>
+                <div class="dash-exp-pct" id="dk-pct-drv">0% del gross</div>
+              </div>
+              <div class="dash-exp-item">
+                <div class="dash-exp-label">Diesel</div>
+                <div class="dash-exp-val" id="dk-exp-fuel">$0</div>
+                <div class="dash-exp-bar-wrap"><div class="dash-exp-bar" id="dk-bar-fuel" style="width:0%;background:var(--red)"></div></div>
+                <div class="dash-exp-pct" id="dk-pct-fuel">0% del gross</div>
+              </div>
+              <div class="dash-exp-item">
+                <div class="dash-exp-label">Dispatcher</div>
+                <div class="dash-exp-val" id="dk-exp-dis">$0</div>
+                <div class="dash-exp-bar-wrap"><div class="dash-exp-bar" id="dk-bar-dis" style="width:0%;background:var(--blue)"></div></div>
+                <div class="dash-exp-pct" id="dk-pct-dis">0% del gross</div>
+              </div>
+              <div class="dash-exp-item">
+                <div class="dash-exp-label">Factoring</div>
+                <div class="dash-exp-val" id="dk-exp-fac">$0</div>
+                <div class="dash-exp-bar-wrap"><div class="dash-exp-bar" id="dk-bar-fac" style="width:0%;background:var(--yellow)"></div></div>
+                <div class="dash-exp-pct" id="dk-pct-fac">0% del gross</div>
+              </div>
+              <div class="dash-exp-item">
+                <div class="dash-exp-label">Maintenance</div>
+                <div class="dash-exp-val" id="dk-exp-mnt">$0</div>
+                <div class="dash-exp-bar-wrap"><div class="dash-exp-bar" id="dk-bar-mnt" style="width:0%;background:var(--green)"></div></div>
+                <div class="dash-exp-pct" id="dk-pct-mnt">0% del gross</div>
+              </div>
+              <div class="dash-exp-item" style="background:var(--orange-bg);border:0.5px solid var(--orange-border)">
+                <div class="dash-exp-label" style="color:var(--orange)">Total Expenses</div>
+                <div class="dash-exp-val" style="color:var(--orange)" id="dk-exp-total">$0</div>
+                <div class="dash-exp-bar-wrap"><div class="dash-exp-bar" id="dk-bar-total" style="width:0%;background:var(--orange)"></div></div>
+                <div class="dash-exp-pct" id="dk-pct-total">0% del gross</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
 
       <!-- CALCULATOR -->
       <div class="section active" id="sec-calc">
@@ -426,7 +620,7 @@ textarea.paste-area::placeholder{color:var(--text3)}
   </div>
 </div>
 <div class="toast" id="toast"></div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 let loads=[],currentCalc=null,isDark=true,uploadedFile=null,uploadedFileType=null;
 let cfg={mpg:6,diesel:5.40,green:2.50,yellow:1.80,drv:25,disp:5,fact:2.5,mnt:10};
@@ -436,6 +630,8 @@ function init(){
   try{const s=localStorage.getItem('hs_cfg');if(s)cfg=Object.assign({},cfg,JSON.parse(s));}catch(e){}
   try{isDark=localStorage.getItem('hs_theme')!=='light';applyTheme();}catch(e){}
   applyCfg();syncLocalFields();updateCount();liveCalc();
+  /* Start on dashboard */
+  showSec('dash');
 }
 
 function applyTheme(){
@@ -507,17 +703,131 @@ function saveStorage(){
 }
 
 function showSec(s){
-  ['calc','hist','brokers','settings'].forEach(x=>{
+  ['dash','calc','hist','brokers','settings'].forEach(x=>{
     document.getElementById('sec-'+x).classList.toggle('active',x===s);
     document.getElementById('sn-'+x).classList.toggle('active',x===s);
   });
-  const titles={calc:'Load Calculator',hist:'Load History',brokers:'Broker Ranking',settings:'Settings'};
-  const subs={calc:'Evalúa la rentabilidad de tu carga',hist:'Todas tus cargas guardadas',brokers:'Ranking por RPM promedio',settings:'Configura tu operación'};
+  const titles={dash:'Analytics Dashboard',calc:'Load Calculator',hist:'Load History',brokers:'Broker Ranking',settings:'Settings'};
+  const subs={dash:'Resumen financiero de tu operación',calc:'Evalúa la rentabilidad de tu carga',hist:'Todas tus cargas guardadas',brokers:'Ranking por RPM promedio',settings:'Configura tu operación'};
   document.getElementById('tb-title').textContent=titles[s];
   document.getElementById('tb-sub').textContent=subs[s];
   document.getElementById('tb-right').style.display=s==='calc'?'flex':'none';
+  if(s==='dash')renderDash();
   if(s==='hist')renderHist();
   if(s==='brokers')renderBrokers();
+}
+
+let dashChartInstance=null;
+
+function renderDash(){
+  if(!loads.length){
+    document.getElementById('dk-balance').textContent='$0.00';
+    document.getElementById('dk-earnings').textContent='$0.00';
+    document.getElementById('dk-expenses').textContent='$0.00';
+    document.getElementById('dk-rpm').textContent='$0.00';
+    document.getElementById('dk-loads').textContent='0';
+    document.getElementById('dk-miles').textContent='0';
+    document.getElementById('dk-margin').textContent='0%';
+    document.getElementById('dash-recent-list').innerHTML='<div style="font-size:12px;color:var(--text3);padding:10px 0">Sin loads guardados aún.</div>';
+    return;
+  }
+
+  const totGross=loads.reduce((a,l)=>a+(l.pay||0),0);
+  const totNet=loads.reduce((a,l)=>a+(l.net||0),0);
+  const totExp=loads.reduce((a,l)=>a+(l.totalExp||0),0);
+  const totDrv=loads.reduce((a,l)=>a+(l.drv||0),0);
+  const totFuel=loads.reduce((a,l)=>a+(l.fuel||0),0);
+  const totDis=loads.reduce((a,l)=>a+(l.dis||0),0);
+  const totFac=loads.reduce((a,l)=>a+(l.fac||0),0);
+  const totMnt=loads.reduce((a,l)=>a+(l.mnt||0),0);
+  const totMiles=loads.reduce((a,l)=>a+(l.tot||0),0);
+  const avgRpm=loads.reduce((a,l)=>a+(l.netRPM||0),0)/loads.length;
+  const margin=totGross>0?(totNet/totGross*100):0;
+
+  document.getElementById('dk-balance').textContent='$'+totNet.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('dk-earnings').textContent='$'+totGross.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('dk-expenses').textContent='$'+totExp.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('dk-rpm').textContent='$'+avgRpm.toFixed(2);
+  document.getElementById('dk-loads').textContent=loads.length;
+  document.getElementById('dk-miles').textContent=Math.round(totMiles).toLocaleString();
+  document.getElementById('dk-margin').textContent=margin.toFixed(1)+'%';
+  document.getElementById('dk-balance-sub').textContent=loads.length+' load'+(loads.length===1?'':'s')+' guardados';
+
+  function setExp(id,bar,pct,val,gross){
+    document.getElementById(id).textContent='$'+Math.round(val).toLocaleString();
+    const p=gross>0?Math.min(100,(val/gross*100)):0;
+    document.getElementById(bar).style.width=p+'%';
+    document.getElementById(pct).textContent=p.toFixed(1)+'% del gross';
+  }
+  setExp('dk-exp-drv','dk-bar-drv','dk-pct-drv',totDrv,totGross);
+  setExp('dk-exp-fuel','dk-bar-fuel','dk-pct-fuel',totFuel,totGross);
+  setExp('dk-exp-dis','dk-bar-dis','dk-pct-dis',totDis,totGross);
+  setExp('dk-exp-fac','dk-bar-fac','dk-pct-fac',totFac,totGross);
+  setExp('dk-exp-mnt','dk-bar-mnt','dk-pct-mnt',totMnt,totGross);
+  setExp('dk-exp-total','dk-bar-total','dk-pct-total',totExp,totGross);
+
+  /* RECENT LOADS */
+  const recent=loads.slice(0,5);
+  document.getElementById('dash-recent-list').innerHTML=recent.map(l=>{
+    const rpm=l.netRPM||0;
+    const col=rpm>=cfg.green?'var(--green)':rpm>=cfg.yellow?'var(--yellow)':'var(--red)';
+    const initials=((l.pickup||'?').slice(0,2)).toUpperCase();
+    const shortRoute=(r,max)=>r&&r.length>max?r.slice(0,max)+'...':r||'?';
+    return`<div class="dash-recent-item">
+      <div class="dash-recent-avatar">${initials}</div>
+      <div style="flex:1;min-width:0">
+        <div class="dash-recent-route">${shortRoute(l.pickup,12)} → ${shortRoute(l.delivery,12)}</div>
+        <div class="dash-recent-meta">${l.date} · ${l.tot||0} mi · $${(l.netRPM||0).toFixed(2)}/mi</div>
+      </div>
+      <div class="dash-recent-profit">
+        <div class="dash-recent-val" style="color:${col}">${(l.net||0)>=0?'+$':'-$'}${Math.abs(l.net||0).toFixed(0)}</div>
+        <div class="dash-recent-rpm">${rpm.toFixed(2)} RPM</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  /* CHART */
+  renderDashChart();
+}
+
+function renderDashChart(){
+  const canvas=document.getElementById('dash-chart');
+  if(!canvas)return;
+
+  const recent=[...loads].slice(0,10).reverse();
+  if(!recent.length)return;
+
+  const labels=recent.map(l=>{
+    const pu=(l.pickup||'?').split(',')[0].slice(0,8);
+    const dl=(l.delivery||'?').split(',')[0].slice(0,8);
+    return pu+'→'+dl;
+  });
+  const grossData=recent.map(l=>+(l.pay||0).toFixed(0));
+  const netData=recent.map(l=>+(l.net||0).toFixed(0));
+  const expData=recent.map(l=>+(l.totalExp||0).toFixed(0));
+
+  if(dashChartInstance){dashChartInstance.destroy();dashChartInstance=null;}
+
+  dashChartInstance=new Chart(canvas,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Gross Pay',data:grossData,borderColor:'#f97316',backgroundColor:'rgba(249,115,22,0.08)',borderWidth:2.5,pointBackgroundColor:'#f97316',pointRadius:4,tension:0.4,fill:true},
+        {label:'Net Profit',data:netData,borderColor:'#10d98a',backgroundColor:'rgba(16,217,138,0.08)',borderWidth:2.5,pointBackgroundColor:'#10d98a',pointRadius:4,tension:0.4,fill:true},
+        {label:'Expenses',data:expData,borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.05)',borderWidth:2,pointBackgroundColor:'#ef4444',pointRadius:3,borderDash:[4,3],tension:0.4,fill:false}
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'#1e1e1e',titleColor:'#f5f5f5',bodyColor:'#aaa',borderColor:'#333',borderWidth:1,callbacks:{label:ctx=>' $'+ctx.parsed.y.toLocaleString()}}},
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#666',font:{size:10},maxRotation:30}},
+        y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#666',font:{size:10},callback:v=>'$'+v.toLocaleString()}}
+      }
+    }
+  });
 }
 
 function setMode(m){
@@ -1002,6 +1312,7 @@ function saveLoad(){
   };
   loads.unshift(load);
   saveStorage();updateCount();toast('Load guardado');
+  renderDash();
   const btn=document.getElementById('save-btn');
   btn.textContent='✓ Guardado';
   setTimeout(()=>{btn.innerHTML='<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Accept & Save Load';},2500);
